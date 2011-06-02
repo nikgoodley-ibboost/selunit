@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This is the DTD for the Selunit test reports.
+
+<!DOCTYPE testsuite PUBLIC
+	"-//Selunit//DTD Selunit Report 1.0.0//EN"
+	"http://www.mbok.de/dtd/selunit-report_1_0_0.dtd">
+-->
+<!ELEMENT testsuite (job-info, testcase*)>
+
+<!ATTLIST testsuite
+	name		CDATA #IMPLIED
+	time		CDATA #IMPLIED
+	start-time	CDATA #IMPLIED
+	end-time	CDATA #IMPLIED
+	total		CDATA #IMPLIED
+	passes		CDATA #IMPLIED
+	failures	CDATA #IMPLIED
+	iteration	CDATA #IMPLIED	
+	result		(passed|failed|running|canceled) "passed">
+	
+<!ELEMENT job-info (project, selenium, prop*)>
+
+<!ATTLIST job-info
+	id				CDATA #IMPLIED
+	name			CDATA #IMPLIED
+	browser			CDATA #IMPLIED
+	os				CDATA #IMPLIED>
+
+<!ELEMENT project EMPTY>
+
+<!ATTLIST project
+	id				CDATA #IMPLIED
+	name			CDATA #IMPLIED>
+	
+<!ELEMENT selenium (prop*)>
+
+<!ELEMENT prop EMPTY>
+	
+<!ATTLIST prop
+	name		CDATA #IMPLIED
+	value		CDATA #IMPLIED>
+
+<!ELEMENT testcase (log)>
+
+<!ATTLIST testcase
+	name				CDATA #IMPLIED
+	file	 			CDATA #IMPLIED
+	result				(passed|failed|running|canceled) "passed"
+	time				CDATA #IMPLIED
+	start-time			CDATA #IMPLIED
+	end-time			CDATA #IMPLIED>
+
+<!ELEMENT log (html-summary, system-log)>
+
+<!ELEMENT system-log (#PCDATA)>
+
+<!ELEMENT html-summary (#PCDATA)>
