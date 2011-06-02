@@ -1,0 +1,27 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<artifactId>selunit-root</artifactId>
+		<groupId>org.selunit</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../selunit-root</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>selunit-selenium-dependencies</artifactId>
+	<name>selenium-dependencies</name>
+	<packaging>pom</packaging>
+
+	<properties>
+		<selenium.version>2.0b2</selenium.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>${selenium.version}</version>
+			<!-- <scope>runtime</scope> -->
+		</dependency>
+	</dependencies>
+</project>
