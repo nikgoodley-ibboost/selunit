@@ -17,8 +17,8 @@ public class CaseSystemLogExtractorTest {
 	@Before
 	public void readLog() throws Exception {
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
-		InputStream logInput = getClass().getClassLoader().getResourceAsStream(
-				"test-selenium-logs.log");
+		InputStream logInput = getClass().getResourceAsStream(
+				"/test-selenium-logs.log");
 		byte[] b = new byte[4096];
 		int len;
 		while ((len = logInput.read(b)) >= 0) {
