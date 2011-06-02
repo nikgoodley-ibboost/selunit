@@ -1,0 +1,135 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<artifactId>selunit-root</artifactId>
+		<groupId>org.selunit</groupId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../selunit-root</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.selunit</groupId>
+	<artifactId>selunit-maven-plugin</artifactId>
+	<name>selunit-maven-plugin</name>
+	<packaging>maven-plugin</packaging>
+	<url>http://www.selunit.org</url>
+
+	<dependencies>
+		<!-- Selunit -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>selunit-core</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>selunit-selenium-dependencies</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- 3rd party -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-project</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.6.5</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<goalPrefix>selunit</goalPrefix>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0-beta-3</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>adapt-config-bean-mojo-pages</id>
+						<phase>post-site</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<replace
+									file="${project.build.directory}/site/SeleniumPropertiesConfig-mojo.html"
+									token="selunit:SeleniumPropertiesConfig" value="SeleniumPropertiesConfig" />
+								<replaceregexp
+									file="${project.build.directory}/site/SeleniumPropertiesConfig-mojo.html"
+									match="org.selunit:selunit-maven-plugin:.*:SeleniumPropertiesConfig"
+									replace="org.selunit.maven.config.SeleniumPropertiesConfig"
+									byline="true" />
+
+								<replace
+									file="${project.build.directory}/site/EnvironmentInfoConfig-mojo.html"
+									token="selunit:EnvironmentInfoConfig" value="EnvironmentInfoConfig" />
+								<replaceregexp
+									file="${project.build.directory}/site/EnvironmentInfoConfig-mojo.html"
+									match="org.selunit:selunit-maven-plugin:.*:EnvironmentInfoConfig"
+									replace="org.selunit.maven.config.EnvironmentInfoConfig"
+									byline="true" />
+
+								<replace file="${project.build.directory}/site/Job-mojo.html"
+									token="selunit:Job" value="Job" />
+								<replaceregexp file="${project.build.directory}/site/Job-mojo.html"
+									match="org.selunit:selunit-maven-plugin:.*:Job" replace="org.selunit.maven.Job"
+									byline="true" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<minmemory>128m</minmemory>
+					<maxmemory>512</maxmemory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE testsuite PUBLIC "-//Selunit//DTD Selunit Report 1.0.0//EN" "selunit-report_1_0_0.dtd">
+
+<testsuite name="Test Suite" time="1.674" start-time="1305923058426" end-time="1305923060100" total="3" iteration="1" passes="1" failures="2">
+  <job-info id="job-2" name="job-2" os="Android 2.3" browser="Firefox 4.1">
+    <project id="maven-project-name" name="maven-project-name" />
+    <selenium>
+      <prop name="port" value="4449" />
+      <prop name="browser" value="*firefox" />
+      <prop name="multi-window" value="true" />
+      <prop name="timeout" value="300" />
+      <prop name="userExtensions" value="null" />
+      <prop name="browser-url" value="http://www.google.de" />
+    </selenium>
+    <prop name="hierarchicalTestName" value="Android_2_3.Firefox_4_1.job-2.Test_Suite" />
+  </job-info>
+  <testcase name="GoogleSearch1" file="testcases/GoogleSearch1.html" result="failed" time="1.01" start-time="1305923058426" end-time="1305923059436">
+    <log>
+      <html-summary><![CDATA[<div class="selenium-report">
+  <table border="1" cellpadding="1" cellspacing="1">
+    <thead>
+      <tr class="title status_failed">
+        <td rowspan="1" colspan="3">GoogleSearch1</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>open</td>
+        <td>/</td>
+        <td></td>
+      </tr>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>type</td>
+        <td>q</td>
+        <td>selenium</td>
+      </tr>
+<!--Cause an error accessing not available element-->
+      <tr class=" status_failed" style="cursor: pointer;">
+        <td>type</td>
+        <td>qnull</td>
+        <td>Element&nbsp;qnull&nbsp;not&nbsp;found</td>
+      </tr>
+      <tr class="" style="cursor: pointer;">
+        <td>type</td>
+        <td>q</td>
+        <td>continue case...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>]]></html-summary>
+      <system-log><![CDATA[info: Start test case "/selenium-server/testjob-job-2/testcases/GoogleSearch1.html" at: 1305923058426
+info: Starting test /selenium-server/testjob-job-2/testcases/GoogleSearch1.html
+info: Executing: |open | / |  |
+info: Executing: |type | q | selenium |
+info: Executing: |type | qnull | selenium |
+error: Element qnull not found
+warn: currentTest.recordFailure: Element qnull not found
+info: Finished test case "/selenium-server/testjob-job-2/testcases/GoogleSearch1.html" at: 1305923059436]]></system-log>
+    </log>
+  </testcase>
+  <testcase name="GoogleSearch2" file="testcases/GoogleSearch2.html" result="failed" time="0.333" start-time="1305923059472" end-time="1305923059805">
+    <log>
+      <html-summary><![CDATA[<div class="selenium-report">
+  <table border="1" cellpadding="1" cellspacing="1">
+    <thead>
+      <tr class="title status_failed">
+        <td rowspan="1" colspan="3">GoogleSearch2</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>open</td>
+        <td>/</td>
+        <td></td>
+      </tr>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>type</td>
+        <td>q</td>
+        <td>selenium</td>
+      </tr>
+      <tr class=" status_failed" style="cursor: pointer;">
+        <td>verifyText</td>
+        <td>q</td>
+        <td>
+        Actual&nbsp;value&nbsp;''&nbsp;did&nbsp;not&nbsp;match&nbsp;'selenium'</td>
+      </tr>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>type</td>
+        <td>q</td>
+        <td>continue case...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>]]></html-summary>
+      <system-log><![CDATA[info: Start test case "/selenium-server/testjob-job-2/testcases/GoogleSearch2.html" at: 1305923059472
+info: Starting test /selenium-server/testjob-job-2/testcases/GoogleSearch2.html
+info: Executing: |open | / |  |
+info: Executing: |type | q | selenium |
+info: Executing: |verifyText | q | selenium |
+warn: currentTest.recordFailure: Actual value '' did not match 'selenium'
+info: Executing: |type | q | continue case... |
+info: Finished test case "/selenium-server/testjob-job-2/testcases/GoogleSearch2.html" at: 1305923059805]]></system-log>
+    </log>
+  </testcase>
+  <testcase name="GoogleSearch3" file="testcases/GoogleSearch3.html" result="passed" time="0.263" start-time="1305923059837" end-time="1305923060100">
+    <log>
+      <html-summary><![CDATA[<div class="selenium-report">
+  <table border="1" cellpadding="1" cellspacing="1">
+    <thead>
+      <tr class="title status_passed">
+        <td rowspan="1" colspan="3">GoogleSearch3</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>open</td>
+        <td>/</td>
+        <td></td>
+      </tr>
+      <tr class=" status_done" style="cursor: pointer;">
+        <td>type</td>
+        <td>q</td>
+        <td>selenium</td>
+      </tr>
+    </tbody>
+  </table>
+</div>]]></html-summary>
+      <system-log><![CDATA[info: Start test case "/selenium-server/testjob-job-2/testcases/GoogleSearch3.html" at: 1305923059837
+info: Starting test /selenium-server/testjob-job-2/testcases/GoogleSearch3.html
+info: Executing: |open | / |  |
+info: Executing: |type | q | selenium |
+info: Finished test case "/selenium-server/testjob-job-2/testcases/GoogleSearch3.html" at: 1305923060100]]></system-log>
+    </log>
+  </testcase>
+</testsuite>
+
