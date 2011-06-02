@@ -4,7 +4,7 @@ This is the DTD for the Selunit test reports.
 
 <!DOCTYPE testsuite PUBLIC
 	"-//Selunit//DTD Selunit Report 1.0.0//EN"
-	"http://www.mbok.de/dtd/selunit-report_1_0_0.dtd">
+	"http://www.selunit.org/dtd/selunit-report_1_0_0.dtd">
 -->
 <!ELEMENT testsuite (job-info, testcase*)>
 
