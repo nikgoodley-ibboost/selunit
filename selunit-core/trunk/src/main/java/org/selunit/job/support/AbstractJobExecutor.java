@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 selunit.org
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.selunit.job.support;
 
 import java.io.File;
@@ -7,8 +22,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.selunit.config.SeleniumProperties;
+import org.selunit.config.support.ExtRemoteControlConfiguration;
 import org.selunit.job.JobExecutor;
 import org.selunit.job.JobExecutorHandler;
 import org.selunit.job.TestJob;
@@ -23,7 +39,6 @@ import org.selunit.report.support.DefaultTestSuite;
 import org.selunit.testpackage.TestResource;
 import org.selunit.testpackage.TestResourceAccess;
 import org.selunit.testpackage.TestResourceLocator;
-
 
 public abstract class AbstractJobExecutor<J extends TestJob> implements
 		JobExecutor<J> {
@@ -71,11 +86,15 @@ public abstract class AbstractJobExecutor<J extends TestJob> implements
 	 * @return selenium server configuration transformed from
 	 *         {@link SeleniumProperties}
 	 */
-	protected RemoteControlConfiguration getServerConfiguration(
+	protected ExtRemoteControlConfiguration getServerConfiguration(
 			SeleniumProperties props) {
-		RemoteControlConfiguration conf = new RemoteControlConfiguration();
+		ExtRemoteControlConfiguration conf = new ExtRemoteControlConfiguration();
 		conf.setPort(props.getPort());
 		conf.setSingleWindow(!props.isMultiWindow());
+		if (props.getBrowserCapabilities() != null) {
+			conf.setBrowserCapabilities(new DesiredCapabilities(props
+					.getBrowserCapabilities()));
+		}
 		// user-extensions.js is handled by #createServerInstance
 		return conf;
 	}
