@@ -1,4 +1,22 @@
+/*******************************************************************************
+ * Copyright 2011 selunit.org
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.selunit.maven.config;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Configuration bean to define base Selenium properties used in a test job
@@ -22,6 +40,16 @@ public class BaseSeleniumPropertiesConfig {
 				.getTimeoutInSeconds() : parent.getTimeoutInSeconds());
 		setMultiWindow(!child.unsetMultiWindow ? child.isMultiWindow() : parent
 				.isMultiWindow());
+		if (child.getBrowserCapabilities() != null
+				&& parent.getBrowserCapabilities() != null) {
+			Map<String, String> merge = new HashMap<String, String>();
+			merge.putAll(parent.getBrowserCapabilities());
+			merge.putAll(child.getBrowserCapabilities());
+			setBrowserCapabilities(merge);
+		} else {
+			setBrowserCapabilities(child.getBrowserCapabilities() != null ? child
+					.getBrowserCapabilities() : parent.getBrowserCapabilities());
+		}
 	}
 
 	private boolean unsetTimeoutInSeconds = true, unsetMultiWindow = true;
@@ -58,6 +86,20 @@ public class BaseSeleniumPropertiesConfig {
 	 * @parameter default-value="1800"
 	 */
 	private int timeoutInSeconds = 1800;
+
+	/**
+	 * Additional browser capabilities according to the WebDriver
+	 * <code>Capabilities</code> concepts to pass special aspects to the
+	 * browser. An example is to disable web security in Google Chrome by:
+	 * <code><br/>
+	 * &lt;browserCapabilities><br/>
+	 * &nbsp;&lt;commandLineFlags>--disable-web-security&lt;/commandLineFlags><br/>
+	 * &lt;/browserCapabilities><br/>
+	 * </code>
+	 * 
+	 * @parameter
+	 */
+	private Map<String, String> browserCapabilities;
 
 	/**
 	 * @return the userExtensions
@@ -119,6 +161,14 @@ public class BaseSeleniumPropertiesConfig {
 	public void setTimeoutInSeconds(int timeoutInSeconds) {
 		this.timeoutInSeconds = timeoutInSeconds;
 		this.unsetTimeoutInSeconds = false;
+	}
+
+	public Map<String, String> getBrowserCapabilities() {
+		return browserCapabilities;
+	}
+
+	public void setBrowserCapabilities(Map<String, String> browserCapabilities) {
+		this.browserCapabilities = browserCapabilities;
 	}
 
 }
