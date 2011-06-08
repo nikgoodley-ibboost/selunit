@@ -89,7 +89,7 @@ public class BaseSeleniumPropertiesConfig {
 
 	/**
 	 * Additional browser capabilities according to the WebDriver
-	 * <code>Capabilities</code> concepts to pass special aspects to the
+	 * <code>Capabilities</code> concept to pass special aspects to the
 	 * browser. An example is to disable web security in Google Chrome by:
 	 * <code><br/>
 	 * &lt;browserCapabilities><br/>

@@ -80,6 +80,13 @@ public class Job {
 	private List<String> excludeSuites;
 
 	/**
+	 * Set this to "true" to disable test execution for this job.
+	 * 
+	 * @parameter default-value="false"
+	 */
+	private boolean skip;
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -177,6 +184,14 @@ public class Job {
 	 */
 	public boolean isExcludesSet() {
 		return excludesSet;
+	}
+
+	public boolean isSkip() {
+		return skip;
+	}
+
+	public void setSkip(boolean skip) {
+		this.skip = skip;
 	}
 
 }

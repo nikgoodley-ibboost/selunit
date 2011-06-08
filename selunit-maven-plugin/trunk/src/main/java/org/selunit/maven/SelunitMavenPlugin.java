@@ -67,11 +67,7 @@ public class SelunitMavenPlugin extends AbstractMojo {
 	private static int jobCounter = 0;
 
 	/**
-	 * Set this to "true" to bypass unit tests entirely. Its use is NOT
-	 * RECOMMENDED, especially if you enable it using the "maven.test.skip"
-	 * property, because maven.test.skip disables both running the tests and
-	 * compiling the tests. Consider using the <code>skipTests</code> parameter
-	 * instead.
+	 * Set this to "true" to disable test execution for all jobs.
 	 * 
 	 * @parameter default-value="false" expression="${maven.test.skip}"
 	 */
@@ -365,6 +361,10 @@ public class SelunitMavenPlugin extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		if (isSkip()) {
+			getLog().info("Test execution is disabled explicitly for all jobs");
+			return;
+		}
 		getReportsDirectory().mkdirs();
 		if (isConvertToJunitReports()) {
 			getJunitReportsDirectory().mkdirs();
@@ -373,7 +373,11 @@ public class SelunitMavenPlugin extends AbstractMojo {
 		getLog().info("Preparing jobs configuration...");
 		ArrayList<TestJob> jobs = new ArrayList<TestJob>();
 		for (Job jobConfig : getJobs()) {
-			jobs.add(createTestJob(jobConfig));
+			if (!jobConfig.isSkip()) {
+				jobs.add(createTestJob(jobConfig));
+			} else {
+				getLog().info("Skip execution of job: " + jobConfig.getName());
+			}
 		}
 
 		JobExecutor<TestJob> executor = getExecutor();
@@ -406,17 +410,10 @@ public class SelunitMavenPlugin extends AbstractMojo {
 		}
 	}
 
-	/**
-	 * @return the skip
-	 */
 	public boolean isSkip() {
 		return skip;
 	}
 
-	/**
-	 * @param skip
-	 *            the skip to set
-	 */
 	public void setSkip(boolean skip) {
 		this.skip = skip;
 	}
