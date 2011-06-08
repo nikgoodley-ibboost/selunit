@@ -33,16 +33,18 @@ public class Job {
 	/**
 	 * Test job name to output to reports.
 	 * 
-	 * @parameter default-value="${project.name}"
+	 * @parameter default-value="job-[counter]-${project.name}"
 	 */
 	private String name;
 
 	/**
 	 * Selenium properties used in this job execution. For more details see the
 	 * <a href="SeleniumPropertiesConfig-mojo.html">SeleniumPropertiesConfig</a>
-	 * bean.
+	 * bean. When properties are defined globally on the plugin level, all not
+	 * overridden values in this job are inherited from there. When properties
+	 * are not specified for this job, configuration is obtained completely from
+	 * the plugin level.
 	 * 
-	 * @required
 	 * @parameter
 	 */
 	private SeleniumPropertiesConfig seleniumProperties;
@@ -51,6 +53,10 @@ public class Job {
 	 * Information about the test environment to add to reports. For more
 	 * details see the <a
 	 * href="EnvironmentInfoConfig-mojo.html">EnvironmentInfoConfig</a> bean.
+	 * When properties are defined globally on the plugin level, all not
+	 * overridden values in this job are inherited from there. When properties
+	 * are not specified for this job, configuration is obtained completely from
+	 * the plugin level.
 	 * 
 	 * @parameter
 	 */
@@ -59,7 +65,8 @@ public class Job {
 	/**
 	 * A list of &lt;include>...&lt;/include> elements specifying the Selenium
 	 * test suites (by pattern) that should be included in testing. When not
-	 * specified, the default includes will be <code><br/>
+	 * specified, includes from plugin level are obtained. If they are not set
+	 * too, the default includes will be <code><br/>
 	 * &lt;includeSuites><br/>
 	 * &nbsp;&lt;include>**&#47;Suite*.html&lt;/include><br/>
 	 * &nbsp;&lt;include>**&#47;*Suite.html&lt;/include><br/>
@@ -73,7 +80,8 @@ public class Job {
 	/**
 	 * A list of &lt;exclude>...&lt;/exclude> elements specifying the Selenium
 	 * test suites (by pattern) that should be excluded in testing. When not
-	 * specified, the default excludes will be empty.
+	 * specified, excludes from plugin level are obtained. If they are not set
+	 * too, the default excludes will be empty.
 	 * 
 	 * @parameter
 	 */
