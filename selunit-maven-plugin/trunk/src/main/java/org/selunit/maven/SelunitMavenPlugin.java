@@ -55,8 +55,7 @@ import org.selunit.support.DefaultTestProject;
 import org.selunit.testpackage.file.DirectoryFileAccess;
 
 /**
- * Selunit maven plugin to execute Selenium test jobs based on Selenese HTML
- * suites.
+ * Goal for executing Selenium test jobs based on Selenese HTML suites.
  * 
  * @requiresDependencyResolution test
  * @goal test
