@@ -31,7 +31,7 @@
 					<jobs>
 						<job>
 							<name>IE</name>
-							<skip>true</skip>
+							<skip>false</skip>
 							<seleniumProperties>
 								<browserKey>*iexplore</browserKey>
 							</seleniumProperties>
@@ -41,7 +41,7 @@
 						</job>
 						<job>
 							<name>FF</name>
-							<skip>false</skip>
+							<skip>true</skip>
 							<environmentInfo>
 								<browser>Firefox 3.6</browser>
 							</environmentInfo>
