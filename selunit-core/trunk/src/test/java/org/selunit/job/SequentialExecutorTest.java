@@ -25,9 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.selunit.config.support.DefaultEnvironmentInfo;
 import org.selunit.config.support.DefaultSeleniumProperties;
-import org.selunit.job.JobExecutorHandler;
-import org.selunit.job.TestJob;
-import org.selunit.job.TestJobException;
 import org.selunit.job.JobStatus.StatusType;
 import org.selunit.job.support.DefaultTestJob;
 import org.selunit.job.support.JobHandlerAdapter;
@@ -39,7 +36,6 @@ import org.selunit.report.output.OutputProcessor;
 import org.selunit.support.DefaultTestProject;
 import org.selunit.testpackage.TestResourceAccess;
 import org.selunit.testpackage.file.DirectoryFileAccess;
-
 
 public class SequentialExecutorTest {
 	private DefaultTestJob job;
@@ -69,8 +65,8 @@ public class SequentialExecutorTest {
 		job.setSuites(suites);
 	}
 
-	// @Test
-	public void stestSequentialExecutor() throws Exception {
+	@Test
+	public void testSequentialExecutor() throws Exception {
 		final ArrayList<TestSuiteReport> reports = new ArrayList<TestSuiteReport>();
 		SequentialExecutor<DefaultTestJob> exec = new SequentialExecutor<DefaultTestJob>();
 		exec.setTestResourceAccess(resourceAccess);
@@ -112,8 +108,8 @@ public class SequentialExecutorTest {
 		Assert.assertEquals(StatusType.STOPPED, exec.getStatus().getType());
 	}
 
-	// @Test
-	public void stestExecutionStopping() throws Exception {
+	@Test
+	public void testExecutionStopping() throws Exception {
 		final ArrayList<TestSuiteReport> reports = new ArrayList<TestSuiteReport>();
 		final SequentialExecutor<DefaultTestJob> exec = new SequentialExecutor<DefaultTestJob>();
 		exec.setTestResourceAccess(resourceAccess);
@@ -150,8 +146,8 @@ public class SequentialExecutorTest {
 		Assert.assertEquals("Test Suite", reports.get(0).getName());
 	}
 
-	// @Test
-	public void stestShutdown() throws Exception {
+	@Test
+	public void testShutdown() throws Exception {
 		final SequentialExecutor<DefaultTestJob> exec = new SequentialExecutor<DefaultTestJob>();
 		exec.setTestResourceAccess(resourceAccess);
 		ArrayList<JobExecutorHandler<DefaultTestJob>> handlers = new ArrayList<JobExecutorHandler<DefaultTestJob>>();
