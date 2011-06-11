@@ -39,7 +39,7 @@ limitations under the License.
 					<jobs>
 						<job>
 							<name>IE</name>
-							<skip>false</skip>
+							<skip>${skip.ie}</skip>
 							<seleniumProperties>
 								<browserKey>*iexplore</browserKey>
 							</seleniumProperties>
@@ -49,14 +49,14 @@ limitations under the License.
 						</job>
 						<job>
 							<name>FF</name>
-							<skip>true</skip>
+							<skip>${skip.ff}</skip>
 							<environmentInfo>
 								<browser>Firefox 3.6</browser>
 							</environmentInfo>
 						</job>
 						<job>
 							<name>Chrome</name>
-							<skip>true</skip>
+							<skip>${skip.chrome}</skip>
 							<seleniumProperties>
 								<browserKey>*googlechrome</browserKey>
 								<browserCapabilities>
