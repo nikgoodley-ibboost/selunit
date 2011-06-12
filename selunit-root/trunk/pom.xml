@@ -21,7 +21,19 @@
 	<artifactId>selunit-root</artifactId>
 	<packaging>pom</packaging>
 	<name>selunit-root</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
+	<scm>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://selunit.googlecode.com/svn/trunk/</url>
+	</scm>
 
 	<build>
 		<testResources>
