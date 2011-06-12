@@ -50,8 +50,8 @@ limitations under the License.
 		</license>
 	</licenses>
 	<url>http://www.selunit.org</url>
-	<desription>Selunit is an open-source project to simply combine
-		comprehensively Selenium tests with Continuous Integration</desription>
+	<description>Selunit is an open-source project to simply combine
+		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
 		<connection>scm:svn:http://selunit.googlecode.com/svn/trunk/</connection>
