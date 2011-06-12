@@ -27,7 +27,42 @@
 	<artifactId>selunit-maven-plugin</artifactId>
 	<name>selunit-maven-plugin</name>
 	<packaging>maven-plugin</packaging>
+	<developers>
+		<developer>
+			<id>MBook</id>
+			<name>Michael</name>
+			<email>selunit@mbok.de</email>
+			<organization />
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>Oliver</id>
+			<name>Oliver</name>
+			<email>selunit@mbok.de</email>
+			<organization />
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<url>http://www.selunit.org</url>
+	<desription>Selunit is an open-source project to simply combine
+		comprehensively Selenium tests with Continuous Integration</desription>
+
+	<scm>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://selunit.googlecode.com/svn/trunk/</url>
+	</scm>
 
 	<dependencies>
 		<!-- Selunit -->
