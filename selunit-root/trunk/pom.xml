@@ -13,7 +13,7 @@
 	<artifactId>selunit-root</artifactId>
 	<packaging>pom</packaging>
 	<name>selunit-root</name>
-	<version>0.7.0</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<developers>
 		<developer>
 			<id>MBook</id>
