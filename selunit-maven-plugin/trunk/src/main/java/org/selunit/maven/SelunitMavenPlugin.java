@@ -45,12 +45,14 @@ import org.selunit.job.support.DefaultTestJob;
 import org.selunit.job.support.SequentialExecutor;
 import org.selunit.maven.config.EnvironmentInfoConfig;
 import org.selunit.maven.config.SeleniumPropertiesConfig;
+import org.selunit.report.TestCaseReport;
 import org.selunit.report.TestSuiteReport;
 import org.selunit.report.output.OutputProcessException;
 import org.selunit.report.output.OutputProcessor;
 import org.selunit.report.output.OutputStreamFactory;
 import org.selunit.report.output.xml.XMLOutputHandler;
 import org.selunit.report.output.xml.XMLProcessor;
+import org.selunit.report.support.DefaultTestCase;
 import org.selunit.support.DefaultTestProject;
 import org.selunit.testpackage.file.DirectoryFileAccess;
 
@@ -192,6 +194,23 @@ public class SelunitMavenPlugin extends AbstractMojo {
 		return "TEST-" + getHierarchicalTestName(report) + ".xml";
 	}
 
+	protected void makeTestCaseNamesSortable(TestSuiteReport suite) {
+		// Add test case number to name to provide the same order in
+		// case of sorting
+		if (suite.getTestCases() != null && suite.getTestCases().size() > 0) {
+			int digits = (int) Math.log10(suite.getTestCases().size()), i = 0;
+			for (TestCaseReport testCase : suite.getTestCases()) {
+				if (testCase instanceof DefaultTestCase) {
+					((DefaultTestCase) testCase).setName((StringUtils.repeat(
+							"0", digits - (int) Math.log10(++i)))
+							+ i
+							+ "."
+							+ testCase.getName());
+				}
+			}
+		}
+	}
+
 	protected JobExecutor<TestJob> getExecutor() {
 		SequentialExecutor<TestJob> executor = new SequentialExecutor<TestJob>();
 
@@ -231,6 +250,7 @@ public class SelunitMavenPlugin extends AbstractMojo {
 			@Override
 			public void processOutput(TestSuiteReport suite)
 					throws OutputProcessException {
+				makeTestCaseNamesSortable(suite);
 				xmlReportProcessor.processOutput(suite);
 				if (isConvertToJunitReports()) {
 					try {
