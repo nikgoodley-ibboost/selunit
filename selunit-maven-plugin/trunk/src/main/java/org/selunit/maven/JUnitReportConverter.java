@@ -46,6 +46,10 @@ import org.xml.sax.SAXException;
  * 
  */
 public class JUnitReportConverter {
+	/**
+	 * Max character length per text column
+	 */
+	public static final int MAX_TEXT_COL_LEN = 120;
 	private TransformerFactory transFact = TransformerFactory.newInstance();
 	private DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	private boolean convertHtmlLog2Text = false;
@@ -93,14 +97,14 @@ public class JUnitReportConverter {
 			String command = cells.get(0).text().replace('\u00A0', ' ');
 			String selector = cells.get(1).text().replace('\u00A0', ' ');
 			String value = cells.get(2).text().replace('\u00A0', ' ');
-			if (command.length() > 70) {
-				command = StringUtils.abbreviate(command, 70);
+			if (command.length() > MAX_TEXT_COL_LEN) {
+				command = StringUtils.abbreviate(command, MAX_TEXT_COL_LEN);
 			}
-			if (selector.length() > 70) {
-				selector = StringUtils.abbreviate(selector, 70);
+			if (selector.length() > MAX_TEXT_COL_LEN) {
+				selector = StringUtils.abbreviate(selector, MAX_TEXT_COL_LEN);
 			}
-			if (value.length() > 70) {
-				value = StringUtils.abbreviate(value, 70);
+			if (value.length() > MAX_TEXT_COL_LEN) {
+				value = StringUtils.abbreviate(value, MAX_TEXT_COL_LEN);
 			}
 			plainTable.add(new String[] { command, selector, value,
 					row.hasClass("status_failed") ? "f" : "p" });

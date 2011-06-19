@@ -24,11 +24,11 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
 import org.junit.Test;
-import org.selunit.maven.Job;
-import org.selunit.maven.SelunitMavenPlugin;
 import org.selunit.maven.config.EnvironmentInfoConfig;
 import org.selunit.maven.config.SeleniumPropertiesConfig;
-
+import org.selunit.report.TestCaseReport;
+import org.selunit.report.support.DefaultTestCase;
+import org.selunit.report.support.DefaultTestSuite;
 
 /**
  * Test for {@link SelunitMavenPlugin}.
@@ -36,7 +36,7 @@ import org.selunit.maven.config.SeleniumPropertiesConfig;
 
 public class SelunitMavenPluginTest {
 
-	//@Test
+	@Test
 	public void testBasic() throws Exception {
 		SelunitMavenPlugin p = new SelunitMavenPlugin();
 		MavenProject mp = new MavenProject();
@@ -71,7 +71,7 @@ public class SelunitMavenPluginTest {
 		p.setReportsDirectory(reportsDir);
 		p.execute();
 		Assert.assertEquals(1, reportsDir.list().length);
-		
+
 		p.setConvertToJunitReports(true);
 		File junitReportsDir = new File("target/selunit-reports-junit");
 		p.setJunitReportsDirectory(junitReportsDir);
@@ -116,6 +116,30 @@ public class SelunitMavenPluginTest {
 		p.setReportsDirectory(reportsDir);
 		p.execute();
 		Assert.assertEquals(1, reportsDir.list().length);
+	}
 
+	@Test
+	public void testCaseRenaming() throws Exception {
+		DefaultTestSuite suite = new DefaultTestSuite();
+		ArrayList<TestCaseReport> cases = new ArrayList<TestCaseReport>();
+		for (int i = 1; i < 145; i++) {
+			DefaultTestCase c = new DefaultTestCase();
+			c.setName(i + "-name");
+			cases.add(c);
+		}
+		suite.setTestCases(cases);
+		new SelunitMavenPlugin().makeTestCaseNamesSortable(suite);
+		for (int i = 1; i < 145; i++) {
+			String prefix;
+			if (i < 10) {
+				prefix = "00";
+			} else if (i < 100) {
+				prefix = "0";
+			} else {
+				prefix = "";
+			}
+			Assert.assertEquals(prefix + i + "." + i + "-name", suite
+					.getTestCases().get(i - 1).getName());
+		}
 	}
 }
