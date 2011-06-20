@@ -59,12 +59,6 @@ limitations under the License.
 		<url>http://selunit.googlecode.com/svn/trunk/</url>
 	</scm>
 
-	<properties>
-		<skip.ie>true</skip.ie>
-		<skip.safari>true</skip.safari>
-		<skip.chrome>true</skip.chrome>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
