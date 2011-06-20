@@ -107,7 +107,7 @@ limitations under the License.
 							<name>Safari</name>
 							<skip>${skip.safari}</skip>
 							<seleniumProperties>
-								<browserKey>*safariproxy  C:/Program Files (x86)/Safari/safari.exe</browserKey>
+								<browserKey>*safari C:/Program Files (x86)/Safari/safari.exe</browserKey>
 							</seleniumProperties>
 							<environmentInfo>
 								<browser>Safari 5</browser>
