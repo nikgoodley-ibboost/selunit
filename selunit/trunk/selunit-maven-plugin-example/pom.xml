@@ -1,0 +1,126 @@
+<!--
+Copyright 2011 selunit.org
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.selunit</groupId>
+	<artifactId>selunit-maven-plugin-example</artifactId>
+	<name>selunit-maven-plugin-example</name>
+	<version>0.7.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<developers>
+		<developer>
+			<id>MBook</id>
+			<name>Michael</name>
+			<email>selunit@mbok.de</email>
+			<organization />
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>Oliver</id>
+			<name>Oliver</name>
+			<email>selunit@mbok.de</email>
+			<organization />
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<url>http://www.selunit.org</url>
+	<description>Selunit is an open-source project to simply combine
+		comprehensively Selenium tests with Continuous Integration</description>
+
+	<scm>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://selunit.googlecode.com/svn/trunk/</url>
+	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>selunit-maven-plugin</artifactId>
+				<version>${project.version}</version>
+				<configuration>
+					<seleniumProperties>
+						<browserUrl>http://www.reiselichter.de</browserUrl>
+					</seleniumProperties>
+					<includeSuites>
+						<include>reiselichter.de/*.html</include>
+					</includeSuites>
+					<jobs>
+						<job>
+							<name>IE</name>
+							<skip>${skip.ie}</skip>
+							<seleniumProperties>
+								<browserKey>*iexplore</browserKey>
+							</seleniumProperties>
+							<environmentInfo>
+								<browser>IE 8</browser>
+							</environmentInfo>
+						</job>
+						<job>
+							<name>FF</name>
+							<skip>${skip.ff}</skip>
+							<environmentInfo>
+								<browser>Firefox 3.6</browser>
+							</environmentInfo>
+						</job>
+						<job>
+							<name>Chrome</name>
+							<skip>${skip.chrome}</skip>
+							<seleniumProperties>
+								<browserKey>*googlechrome</browserKey>
+								<browserCapabilities>
+									<commandLineFlags>--disable-web-security</commandLineFlags>
+								</browserCapabilities>
+							</seleniumProperties>
+							<environmentInfo>
+								<browser>Chrome 12</browser>
+							</environmentInfo>
+						</job>
+						<job>
+							<name>Safari</name>
+							<skip>${skip.safari}</skip>
+							<seleniumProperties>
+								<browserKey>*safari C:/Program Files (x86)/Safari/safari.exe</browserKey>
+								<browserCapabilities>
+									<commandLineFlags>--disable-web-security</commandLineFlags>
+								</browserCapabilities>
+							</seleniumProperties>
+							<environmentInfo>
+								<browser>Safari 5</browser>
+							</environmentInfo>
+						</job>
+					</jobs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
