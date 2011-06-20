@@ -59,6 +59,12 @@ limitations under the License.
 		<url>http://selunit.googlecode.com/svn/trunk/</url>
 	</scm>
 
+	<properties>
+		<skip.ie>true</skip.ie>
+		<skip.safari>true</skip.safari>
+		<skip.chrome>true</skip.chrome>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -101,6 +107,16 @@ limitations under the License.
 							</seleniumProperties>
 							<environmentInfo>
 								<browser>Chrome 12</browser>
+							</environmentInfo>
+						</job>
+						<job>
+							<name>Safari</name>
+							<skip>${skip.safari}</skip>
+							<seleniumProperties>
+								<browserKey>*safariproxy</browserKey>
+							</seleniumProperties>
+							<environmentInfo>
+								<browser>Safari 5</browser>
 							</environmentInfo>
 						</job>
 					</jobs>
