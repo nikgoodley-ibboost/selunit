@@ -103,6 +103,16 @@ limitations under the License.
 								<browser>Chrome 12</browser>
 							</environmentInfo>
 						</job>
+						<job>
+							<name>Safari</name>
+							<skip>${skip.safari}</skip>
+							<seleniumProperties>
+								<browserKey>*safariproxy C:/Program Files (x86)/Safari/safari.exe</browserKey>
+							</seleniumProperties>
+							<environmentInfo>
+								<browser>Safari 5</browser>
+							</environmentInfo>
+						</job>
 					</jobs>
 				</configuration>
 			</plugin>
