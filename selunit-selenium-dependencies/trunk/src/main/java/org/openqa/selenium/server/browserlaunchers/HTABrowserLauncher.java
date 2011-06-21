@@ -4,33 +4,25 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Logger;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.
-/**
- * Selunit patch: Adapted to work in a none one JAR environment; added support
- * for reading the user extensions file from RC.
- * 
- * @author mbok
- */
 public class HTABrowserLauncher implements BrowserLauncher {
 	static Logger log = Logger.getLogger(HTABrowserLauncher.class.getName());
 	private String sessionId;
@@ -88,105 +80,46 @@ public class HTABrowserLauncher implements BrowserLauncher {
 		htaProcess = command.executeAsync();
 	}
 
-	/**
-	 * Extracts files from classpath by using an index.properties files which
-	 * list all file in core. Furthermore all JS resource locations in HTA files
-	 * are changed to the RC server, as others browser do it.
-	 * 
-	 * @author mbok
-	 */
 	private void createHTAFiles() {
 		dir = LauncherUtils.createCustomProfileDir(sessionId);
 		File coreDir = new File(dir, "core");
 		try {
 			coreDir.mkdirs();
-			extractCoreResourcesByIndex(HTABrowserLauncher.class, coreDir);
+
+			// **************START SELUNIT PATCH**********************
+			// ResourceExtractor.extractResourcePath(HTABrowserLauncher.class,
+			// "/core", coreDir);
+			CoreResourcesUtils.extractCoreResourcesByIndex(
+					HTABrowserLauncher.class, coreDir);
+			CoreResourcesUtils.routeRunnersLinksToSeleniumServer(coreDir,
+					configuration);
+			// **************END SELUNIT PATCH**********************
+
 			File selRunnerSrc = new File(coreDir, "RemoteRunner.html");
 			File selRunnerDest = new File(coreDir, "RemoteRunner.hta");
-			String remRunnerStr = FileUtils.readFileToString(selRunnerSrc);
-			remRunnerStr = remRunnerStr.replaceAll("src=\"",
-					"src=\"http://localhost:" + configuration.getPort()
-							+ "/selenium-server/core/");
-			FileUtils.writeStringToFile(selRunnerDest, remRunnerStr);
-
 			File testRunnerSrc = new File(coreDir, "TestRunner.html");
 			File testRunnerDest = new File(coreDir, "TestRunner.hta");
-			String testRunnerStr = FileUtils.readFileToString(testRunnerSrc);
-			testRunnerStr = testRunnerStr.replaceAll("src=\"",
-					"src=\"http://localhost:" + configuration.getPort()
-							+ "/selenium-server/core/");
-			FileUtils.writeStringToFile(testRunnerDest, testRunnerStr);
+			// custom user-extensions
+
+			// **************START SELUNIT PATCH**********************
+			// File userExt = this.configuration.getUserExtensions();
+			// if (userExt != null) {
+			// File selUserExt = new File(coreDir,
+			// "scripts/user-extensions.js");
+			// FileHandler.copy(userExt, selUserExt);
+			// }
+			// **************END SELUNIT PATCH**********************
+
+			FileHandler.copy(selRunnerSrc, selRunnerDest);
+			FileHandler.copy(testRunnerSrc, testRunnerDest);
+
+			// **************START SELUNIT PATCH**********************
+			// writeSessionExtensionJs(coreDir);
+			// **************END SELUNIT PATCH**********************
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	/**
-	 * Extracts files from classpath located in "/core" to destination folder as
-	 * workaround to the default extraction from a jar file by
-	 * {@link ResourceExtractor#extractResourcePath(Class, String, File)}, which
-	 * doesn't work in multi classpath scenarios.
-	 * 
-	 * @param c
-	 *            class to access classpath by
-	 * @param dest
-	 *            destination folder
-	 * @throws IOException
-	 */
-	private void extractCoreResourcesByIndex(Class<?> c, File dest)
-			throws IOException {
-		InputStream indexStream = c
-				.getResourceAsStream("/core/index.properties");
-		if (indexStream != null) {
-			Properties indexProps = new Properties();
-			indexProps.load(indexStream);
-			String indexStr = indexProps.getProperty("core.files");
-			if (indexStr != null) {
-				String[] resources = indexStr.split(";");
-				log.info("Copying " + resources.length
-						+ " core resource from classpath by index list...");
-				for (String r : resources) {
-					InputStream rIs = c.getResourceAsStream("/core/" + r);
-					if (rIs != null) {
-						File targetFile = new File(dest, r);
-						if (r.contains("/")) {
-							targetFile.getParentFile().mkdirs();
-						}
-						BufferedOutputStream out = new BufferedOutputStream(
-								new FileOutputStream(targetFile));
-						try {
-							IOUtils.copy(rIs, out);
-						} finally {
-							out.close();
-							rIs.close();
-						}
-					} else {
-						log.warning("Couldn't read resource: " + r);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * @author mbok: Original implementation working with one JAR and local
-	 *         extracted files private void createHTAFiles() { dir =
-	 *         LauncherUtils.createCustomProfileDir(sessionId); File coreDir =
-	 *         new File(dir, "core"); try { coreDir.mkdirs();
-	 *         ResourceExtractor.extractResourcePath(HTABrowserLauncher.class,
-	 *         "/core", coreDir); File selRunnerSrc = new File(coreDir,
-	 *         "RemoteRunner.html"); File selRunnerDest = new File(coreDir,
-	 *         "RemoteRunner.hta"); File testRunnerSrc = new File(coreDir,
-	 *         "TestRunner.html"); File testRunnerDest = new File(coreDir,
-	 *         "TestRunner.hta"); // custom user-extensions File userExt =
-	 *         this.configuration.getUserExtensions(); if (userExt != null) {
-	 *         File selUserExt = new File(coreDir,
-	 *         "scripts/user-extensions.js"); FileHandler.copy(userExt,
-	 *         selUserExt); } FileHandler.copy(selRunnerSrc, selRunnerDest);
-	 *         FileHandler.copy(testRunnerSrc, testRunnerDest);
-	 *         writeSessionExtensionJs(coreDir); } catch (IOException e) { throw
-	 *         new RuntimeException(e); } }
-	 **/
 
 	/**
 	 * Writes the session extension javascript to the custom profile directory.
@@ -196,20 +129,21 @@ public class HTABrowserLauncher implements BrowserLauncher {
 	 * @param coreDir
 	 * @throws IOException
 	 */
-	/**
-	 * @author mbok private void writeSessionExtensionJs(File coreDir) throws
-	 *         IOException { FrameGroupCommandQueueSet queueSet =
-	 *         FrameGroupCommandQueueSet .getQueueSet(sessionId);
-	 * 
-	 *         if (queueSet.getExtensionJs().length() > 0) { String path =
-	 *         "scripts/user-extensions.js[" + sessionId + "]"; FileWriter
-	 *         fileWriter = new FileWriter(new File(coreDir, path));
-	 *         BufferedWriter writer = new BufferedWriter(fileWriter);
-	 * 
-	 *         writer.write(queueSet.getExtensionJs()); writer.close();
-	 * 
-	 *         fileWriter.close(); } }
-	 **/
+	private void writeSessionExtensionJs(File coreDir) throws IOException {
+		FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet
+				.getQueueSet(sessionId);
+
+		if (queueSet.getExtensionJs().length() > 0) {
+			String path = "scripts/user-extensions.js[" + sessionId + "]";
+			FileWriter fileWriter = new FileWriter(new File(coreDir, path));
+			BufferedWriter writer = new BufferedWriter(fileWriter);
+
+			writer.write(queueSet.getExtensionJs());
+			writer.close();
+
+			fileWriter.close();
+		}
+	}
 
 	public void close() {
 		if (browserOptions.is("killProcessesByName")) {
