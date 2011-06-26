@@ -17,7 +17,7 @@
 	<parent>
 		<artifactId>selunit-root</artifactId>
 		<groupId>org.selunit</groupId>
-		<version>0.7.0</version>
+		<version>0.7.1-SNAPSHOT</version>
 		<relativePath>../selunit-root</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -57,9 +57,9 @@
 		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
-		<connection>scm:svn:http://selunit.googlecode.com/svn/selunit/tags/selunit-root-0.7.0/trunk</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/selunit-root-0.7.0/trunk</developerConnection>
-		<url>http://selunit.googlecode.com/svn/selunit/tags/selunit-root-0.7.0/trunk</url>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/selunit/trunk/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/</developerConnection>
+		<url>http://selunit.googlecode.com/svn/selunit/trunk/</url>
 	</scm>
 
 	<dependencies>
