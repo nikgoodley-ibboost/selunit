@@ -13,11 +13,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<parent>
 		<artifactId>selunit-root</artifactId>
 		<groupId>org.selunit</groupId>
-		<version>0.7.0</version>
+		<version>0.7.0-SNAPSHOT</version>
 		<relativePath>../selunit-root</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -56,9 +58,9 @@
 		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
-		<connection>scm:svn:http://selunit.googlecode.com/svn/tags/selunit-root-0.7.0/trunk</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/tags/selunit-root-0.7.0/trunk</developerConnection>
-		<url>http://selunit.googlecode.com/svn/tags/selunit-root-0.7.0/trunk</url>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://selunit.googlecode.com/svn/trunk/</url>
 	</scm>
 
 	<properties>
@@ -108,7 +110,8 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<pathconvert pathsep=";" property="core.files" dirsep="/">
+								<pathconvert pathsep=";" property="core.files"
+									dirsep="/">
 									<path>
 										<fileset dir="${project.build.directory}/core-resources">
 											<include name="**" />
@@ -119,7 +122,9 @@
 									</mapper>
 								</pathconvert>
 								<mkdir dir="${project.build.directory}/classes/core" />
-								<echoproperties destfile="${project.build.directory}/classes/core/index.properties" prefix="core" />
+								<echoproperties
+									destfile="${project.build.directory}/classes/core/index.properties"
+									prefix="core" />
 							</tasks>
 						</configuration>
 					</execution>
