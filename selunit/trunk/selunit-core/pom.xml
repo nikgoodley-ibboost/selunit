@@ -60,9 +60,9 @@
 		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
-		<connection>scm:svn:http://selunit.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://selunit.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/selunit/trunk/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/</developerConnection>
+		<url>http://selunit.googlecode.com/svn/selunit/trunk/</url>
 	</scm>
 
 	<properties>
