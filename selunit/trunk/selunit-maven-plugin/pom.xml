@@ -17,7 +17,7 @@
 	<parent>
 		<artifactId>selunit-root</artifactId>
 		<groupId>org.selunit</groupId>
-		<version>0.7.1-SNAPSHOT</version>
+		<version>0.7.1</version>
 		<relativePath>../selunit-root</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -57,9 +57,9 @@
 		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
-		<connection>scm:svn:http://selunit.googlecode.com/svn/selunit/trunk/selunit-maven-plugin/</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-maven-plugin/</developerConnection>
-		<url>http://selunit.googlecode.com/svn/selunit/trunk/selunit-maven-plugin/</url>
+		<connection>scm:svn:http://selunit.googlecode.com/svn/selunit/tags/selunit-root-0.7.1/selunit-maven-plugin</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/selunit-root-0.7.1/selunit-maven-plugin</developerConnection>
+		<url>http://selunit.googlecode.com/svn/selunit/tags/selunit-root-0.7.1/selunit-maven-plugin</url>
 	</scm>
 
 	<dependencies>
