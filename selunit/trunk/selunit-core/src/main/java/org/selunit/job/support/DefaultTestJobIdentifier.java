@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import org.selunit.job.TestJobIdentifier;
 
-
 public class DefaultTestJobIdentifier implements TestJobIdentifier,
 		Serializable {
 	private static final long serialVersionUID = -3366024376901879436L;
@@ -73,7 +72,7 @@ public class DefaultTestJobIdentifier implements TestJobIdentifier,
 
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof TestJobIdentifier && getId().equals(
-				((TestJobIdentifier) obj).getId()));
+		return (obj instanceof TestJobIdentifier && getId() != null && getId()
+				.equals(((TestJobIdentifier) obj).getId()));
 	}
 }
