@@ -20,7 +20,7 @@ limitations under the License.
 	<groupId>org.selunit</groupId>
 	<artifactId>selunit-maven-plugin-example</artifactId>
 	<name>selunit-maven-plugin-example</name>
-	<version>0.7.0-SNAPSHOT</version>
+	<version>0.7.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<developers>
 		<developer>
@@ -59,12 +59,19 @@ limitations under the License.
 		<url>http://selunit.googlecode.com/svn/selunit/trunk/</url>
 	</scm>
 
+	<properties>
+		<!-- Disable jobs for all browsers but Firefox by default -->
+		<skip.ie>true</skip.ie>
+		<skip.chrome>true</skip.chrome>
+		<skip.safari>true</skip.safari>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>selunit-maven-plugin</artifactId>
-				<version>${project.version}</version>
+				<version>0.7.2</version>
 				<configuration>
 					<seleniumProperties>
 						<browserUrl>http://www.reiselichter.de</browserUrl>
