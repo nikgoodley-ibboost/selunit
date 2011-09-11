@@ -422,7 +422,9 @@ public class SelunitMavenPlugin extends AbstractMojo {
 					executor.stop(true);
 				}
 				getLog().info("Finished job: " + job.getName());
-
+				if (executor.getStatus().getExecutionError() != null) {
+					throw executor.getStatus().getExecutionError();
+				}
 			}
 		} catch (TestJobException e) {
 			throw new MojoExecutionException("Failed during executing tests", e);
