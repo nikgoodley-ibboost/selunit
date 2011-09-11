@@ -1,0 +1,8 @@
+#summary Release 0.7.3 candidate
+
+= Enhancements =
+* Migration to Selenium 2.5.0 release
+* Propagation of exceptions during a test to Maven build
+
+= Bug fixes =
+* 1: IndexOutOfBoundsException on suites which don't conform the default HTML syntax 
