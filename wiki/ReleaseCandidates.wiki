@@ -5,4 +5,4 @@
   * Propagation of exceptions during a test to Maven build
 
 = Bug fixes =
-  * #1: IndexOutOfBoundsException on suites which don't conform the default HTML syntax 
+  * [https://code.google.com/p/selunit/issues/detail?id=1&can=1 1: IndexOutOfBoundsException on suites which don't conform the default HTML syntax]
