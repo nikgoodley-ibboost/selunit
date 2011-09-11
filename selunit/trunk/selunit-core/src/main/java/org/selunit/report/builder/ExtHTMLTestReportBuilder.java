@@ -35,7 +35,6 @@ import org.selunit.report.support.DefaultResultLog;
 import org.selunit.report.support.DefaultTestCase;
 import org.selunit.report.support.DefaultTestSuite;
 
-
 /**
  * Generates report API object from raw selenium logs.
  * 
@@ -78,11 +77,21 @@ public class ExtHTMLTestReportBuilder {
 		return suite;
 	}
 
+	private String getElementText(Elements elements, int childNum,
+			String failbackText) {
+		if (childNum < elements.size()) {
+			return elements.get(childNum).text();
+		} else {
+			return failbackText;
+		}
+	}
+
 	private void buildSuiteMetadata(DefaultTestSuite suite,
 			HTMLTestResults testResults, Document htmlResultDoc) {
 		suite.setTime(Double.parseDouble(testResults.getTotalTime()));
-		String suiteName = htmlResultDoc.select("table#suiteTable tr.title td")
-				.get(0).text();
+		String suiteName = getElementText(
+				htmlResultDoc.select("body > table:eq(1) tr.title td"), 0,
+				suite.getFileName());
 		log.info("Identified suite name: " + suiteName);
 		suite.setName(suiteName);
 	}
@@ -95,8 +104,8 @@ public class ExtHTMLTestReportBuilder {
 		String systemLog = htmlResultDoc.select("pre").text().trim();
 		List<CaseLogPair> caseLogs = logExtractor.extractCaseLogs(systemLog);
 
-		Elements caseRows = htmlResultDoc.select("body > table").get(1)
-				.select("table > tr");
+		Elements caseRows = htmlResultDoc
+				.select("body > table:eq(2) > tbody > tr");
 
 		boolean considerSystemCaseLogs = true;
 		if (caseLogs.size() != caseRows.size()) {
@@ -106,9 +115,9 @@ public class ExtHTMLTestReportBuilder {
 
 		for (Element ci : caseRows) {
 			DefaultTestCase co = new DefaultTestCase();
-			co.setFileName(ci.select("a").get(0).text());
-			Elements titleRow = ci.select("tr.title");
-			co.setName(titleRow.first().text());
+			co.setFileName(ci.select("a:eq(0)").text());
+			Elements titleRow = ci.select("tr.title:eq(0)");
+			co.setName(titleRow.text());
 			if (titleRow.hasClass("status_failed")) {
 				co.setResultType(ResultType.FAILED);
 				suiteResultType = ResultType.FAILED;
