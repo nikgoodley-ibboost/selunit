@@ -3,7 +3,7 @@
 = Enhancements =
   * Migration to Selenium 2.5.0 release
   * Propagation of exceptions during a test to Maven build
-  * Accelerated test execution in IE
+  * Acceleration of test execution in IE
 
 
 = Bug fixes =
