@@ -64,6 +64,7 @@ limitations under the License.
 		<skip.ie>true</skip.ie>
 		<skip.chrome>true</skip.chrome>
 		<skip.safari>true</skip.safari>
+		<selunit.plugin.version>0.7.2</selunit.plugin.version>
 	</properties>
 
 	<build>
@@ -71,7 +72,7 @@ limitations under the License.
 			<plugin>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>selunit-maven-plugin</artifactId>
-				<version>0.7.2</version>
+				<version>${selunit.plugin.version}</version>
 				<configuration>
 					<seleniumProperties>
 						<browserUrl>http://www.reiselichter.de</browserUrl>
