@@ -3,6 +3,8 @@
 = Enhancements =
   * Migration to Selenium 2.5.0 release
   * Propagation of exceptions during a test to Maven build
+  * Accelerated test execution in IE
+
 
 = Bug fixes =
   * [https://code.google.com/p/selunit/issues/detail?id=1&can=1 1: IndexOutOfBoundsException on suites which don't conform the default HTML syntax]
