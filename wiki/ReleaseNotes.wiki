@@ -1,0 +1,14 @@
+#summary Release Notes
+#labels ReleaseNotes
+
+=0.7.3
+_at 17.10.2011_
+
+== Enhancements ==
+  * Migration to Selenium 2.8.0 release
+  * Propagation of exceptions during a test to Maven build
+
+
+== Bug fixes ==
+  * [https://code.google.com/p/selunit/issues/detail?id=1&can=1 Issue 1: IndexOutOfBoundsException on suites which don't conform the default HTML syntax]
+  * [https://code.google.com/p/selunit/issues/detail?id=6&can=1 Issue 6: Test execution in IE is slower as in RC]
