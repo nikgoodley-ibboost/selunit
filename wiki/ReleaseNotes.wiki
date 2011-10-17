@@ -1,6 +1,6 @@
 #summary Release Notes
 
-=0.7.3=
+=Selunit 0.7.3=
 _at 17.10.2011_
 
 == Enhancements ==
