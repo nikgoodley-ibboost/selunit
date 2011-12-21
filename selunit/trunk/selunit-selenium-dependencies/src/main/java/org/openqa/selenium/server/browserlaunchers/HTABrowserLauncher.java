@@ -4,8 +4,13 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
@@ -15,12 +20,6 @@ import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.logging.Logger;
-
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.
 public class HTABrowserLauncher implements BrowserLauncher {
@@ -28,8 +27,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
 	private String sessionId;
 	private File dir;
 	private String htaCommandPath;
-	private Process htaProcess;
-	private Process iexploreProcess;
+	private CommandLine htaProcess;
+	private CommandLine iexploreProcess;
 	private RemoteControlConfiguration configuration;
 	private Capabilities browserOptions;
 
@@ -42,7 +41,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
 		htaCommandPath = browserLaunchLocation;
 		this.sessionId = sessionId;
 		this.configuration = configuration;
-		this.browserOptions = browserOptions;
+		this.browserOptions = configuration
+				.copySettingsIntoBrowserOptions(browserOptions);
 	}
 
 	private static String findHTALaunchLocation() {
@@ -71,13 +71,13 @@ public class HTABrowserLauncher implements BrowserLauncher {
 		createHTAFiles();
 		String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
 		log.info("Launching Embedded Internet Explorer...");
-		CommandLine command = new CommandLine(new InternetExplorerLocator()
+		iexploreProcess = new CommandLine(new InternetExplorerLocator()
 				.findBrowserLocationOrFail().launcherFilePath(), "-Embedding");
-		iexploreProcess = command.executeAsync();
+		iexploreProcess.executeAsync();
 		log.info("Launching Internet Explorer HTA...");
 
-		command = new CommandLine(htaCommandPath, hta, query);
-		htaProcess = command.executeAsync();
+		htaProcess = new CommandLine(htaCommandPath, hta, query);
+		htaProcess.executeAsync();
 	}
 
 	private void createHTAFiles() {
@@ -153,19 +153,15 @@ public class HTABrowserLauncher implements BrowserLauncher {
 			WindowsUtils.tryToKillByName("mshta.exe");
 		}
 		if (iexploreProcess != null) {
-			int exitValue = AsyncExecute.killProcess(iexploreProcess);
+			int exitValue = iexploreProcess.destroy();
 			if (exitValue == 0) {
 				log.warning("Embedded iexplore seems to have ended on its own (did we kill the real browser???)");
 			}
 		}
 		if (htaProcess == null)
 			return;
-		AsyncExecute.killProcess(htaProcess);
+		htaProcess.destroy();
 		LauncherUtils.recursivelyDeleteDir(dir);
-	}
-
-	public Process getProcess() {
-		return htaProcess;
 	}
 
 	public void launchHTMLSuite(String suiteUrl, String browserURL) {
@@ -178,10 +174,6 @@ public class HTABrowserLauncher implements BrowserLauncher {
 		return configuration.getPortDriversShouldContact();
 	}
 
-	/**
-	 * Note that the browserConfigurationOptions object is ignored; This browser
-	 * configuration is not supported for IE
-	 */
 	public void launchRemoteSession(String url) {
 		launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId,
 				(!BrowserOptions.isSingleWindow(browserOptions)), getPort(),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 ThoughtWorks, Inc.
+ * Copyright 2011 Software Freedom Conservatory.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,9 +18,16 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import static org.openqa.selenium.Platform.MAC;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.MacProxyManager;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
@@ -29,16 +36,9 @@ import org.openqa.selenium.browserlaunchers.locators.SafariLocator;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -51,7 +51,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 	protected String[] cmdarray;
 	private boolean closed = false;
 	protected BrowserInstallation browserInstallation;
-	protected Process process;
+	protected CommandLine process;
 	protected WindowsProxyManager wpm;
 	protected MacProxyManager mpm;
 	private File backedUpCookieFile;
@@ -92,7 +92,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 		if (!browserConfigurationOptions.is("honorSystemProxy")) {
 			/**
 			 * Route test suite URL to proxy if Safari runs in proxy mode.
-			 * Access to Selenium server by "http://localhost:XXX" will fail on
+			 * Access to Selenium server by "http://localhost:YYY" will fail on
 			 * Win7 due same-origin policy with an error like: Unsafe JavaScript
 			 * attempt to access frame with URL ...
 			 */
@@ -108,23 +108,21 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
 	// **************END SELUNIT PATCH**********************
 
+	@Override
 	protected void launch(String url) {
-		try {
-			if (!browserConfigurationOptions.is("honorSystemProxy")) {
-				setupSystemProxy();
-			}
-
-			if (browserConfigurationOptions.is("ensureCleanSession")) {
-				ensureCleanSession();
-			}
-
-			launchSafari(url);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		if (!browserConfigurationOptions.is("honorSystemProxy")) {
+			setupSystemProxy();
 		}
+
+		if (browserConfigurationOptions
+				.is(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION)) {
+			ensureCleanSession();
+		}
+
+		launchSafari(url);
 	}
 
-	protected void launchSafari(String url) throws IOException {
+	protected void launchSafari(String url) {
 		cmdarray = new String[] { browserInstallation.launcherFilePath() };
 		if (Platform.getCurrent().is(MAC)) {
 			final String redirectHtmlFileName;
@@ -140,9 +138,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 					"-url", url };
 		}
 
-		CommandLine command = new CommandLine(cmdarray);
-		command.setDynamicLibraryPath(browserInstallation.libraryPath());
-		process = command.executeAsync();
+		process = new CommandLine(cmdarray);
+		process.setDynamicLibraryPath(browserInstallation.libraryPath());
+		process.executeAsync();
 	}
 
 	public void close() {
@@ -159,7 +157,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 			return;
 		}
 		log.info("Killing Safari...");
-		exitValue = AsyncExecute.killProcess(process);
+		exitValue = process.destroy();
 		if (exitValue == 0) {
 			log.warning("Safari seems to have ended on its own (did we kill the real browser???)");
 		}
@@ -251,11 +249,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 		return f.getAbsolutePath();
 	}
 
-	public Process getProcess() {
-		return process;
-	}
-
-	private void setupSystemProxy() throws IOException {
+	private void setupSystemProxy() {
 		if (WindowsUtils.thisIsWindows()) {
 			wpm.backupRegistrySettings();
 			changeRegistrySettings();
@@ -268,13 +262,13 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 	private void restoreSystemProxy() {
 		if (WindowsUtils.thisIsWindows()) {
 			wpm.restoreRegistrySettings(browserConfigurationOptions
-					.is("ensureCleanSession"));
+					.is(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION));
 		} else {
 			mpm.restoreNetworkSettings();
 		}
 	}
 
-	protected void changeRegistrySettings() throws IOException {
+	protected void changeRegistrySettings() {
 		wpm.changeRegistrySettings(browserConfigurationOptions);
 	}
 
