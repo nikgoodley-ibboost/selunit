@@ -15,48 +15,41 @@
  ******************************************************************************/
 package org.selunit.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.Map;
-import java.util.Properties;
 
 import org.openqa.selenium.Capabilities;
 
+/**
+ * Wrapper for underlying capabilities map. All exposed methods have to access
+ * the initial values from/to the associated {@link #getCapabilities()} map.
+ * 
+ * @author mbok
+ * 
+ */
 public interface SeleniumProperties {
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.METHOD)
-	public @interface MapToProperty {
-		String name();
-	}
 
-	@MapToProperty(name = "browser")
-	public String getBrowserKey();
-
-	@MapToProperty(name = "browser-url")
-	public String getBrowserURL();
-
-	@MapToProperty(name = "multi-window")
-	public boolean isMultiWindow();
-
-	@MapToProperty(name = "timeout")
-	public int getTimeoutInSeconds();
-
-	@MapToProperty(name = "port")
-	public int getPort();
-
-	@MapToProperty(name = "userExtensions")
-	public String getUserExtensions();
+	public static final String KEY_BROWSER_URL = "browserUrl";
+	public static final String KEY_TIMEOUT = "timeout";
 
 	/**
-	 * Additional browser capabilities as bridge to WebDriver's
-	 * {@link Capabilities}.
+	 * Returns the browser url.
+	 * 
+	 * @return browser url.
+	 */
+	public String getBrowserURL();
+
+	/**
+	 * Returns the timeout per suite. Default value is 360.
+	 * 
+	 * @return Returns the timeout per suite. Default value is 360.
+	 */
+	public int getTimeoutInSeconds();
+
+	/**
+	 * Capabilities as bridge to WebDriver's {@link Capabilities}.
 	 * 
 	 * @return additional browser capabilities
 	 */
-	public Map<String, ?> getBrowserCapabilities();
-
-	public Properties getAsProperties();
+	public Map<String, ?> getCapabilities();
 
 }

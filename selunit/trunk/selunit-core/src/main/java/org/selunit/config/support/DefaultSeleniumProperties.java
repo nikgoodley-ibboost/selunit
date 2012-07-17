@@ -16,64 +16,46 @@
 package org.selunit.config.support;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.math.NumberUtils;
 import org.selunit.config.SeleniumProperties;
 
+/**
+ * Default properties implementation. Note: All convenient methods have to
+ * store/read values to/from {@link #getCapabilities()}.
+ * 
+ * @author mbok
+ * 
+ */
 public class DefaultSeleniumProperties implements SeleniumProperties,
 		Serializable {
 	private static final long serialVersionUID = 3663780060638078002L;
 
-	private static Log log = LogFactory.getLog(DefaultSeleniumProperties.class);
-
-	private String browserKey, browserURL, userExtensions;
-	private int timeoutInSeconds = 30, port = 4449;
-	private boolean multiWindow = true;
-	private Map<String, ?> browserCapabilities;
+	private Map<String, Object> capabilities = new HashMap<String, Object>();
 
 	public DefaultSeleniumProperties() {
 		super();
 	}
 
 	public DefaultSeleniumProperties(SeleniumProperties copy) {
-		this.browserKey = copy.getBrowserKey();
-		this.browserURL = copy.getBrowserURL();
-		this.timeoutInSeconds = copy.getTimeoutInSeconds();
-		this.multiWindow = copy.isMultiWindow();
-		this.userExtensions = copy.getUserExtensions();
-	}
-
-	@Override
-	public String getBrowserKey() {
-		return browserKey;
-	}
-
-	public void setBrowserKey(String browserKey) {
-		this.browserKey = browserKey;
+		setCapabilities(copy.getCapabilities());
 	}
 
 	@Override
 	public String toString() {
-		return getAsProperties().toString();
+		return getCapabilities().toString();
 	}
 
 	@Override
 	public String getBrowserURL() {
-		return browserURL;
+		return getStrCapability(KEY_BROWSER_URL, null);
 	}
 
 	@Override
 	public int getTimeoutInSeconds() {
-		return timeoutInSeconds;
-	}
-
-	@Override
-	public boolean isMultiWindow() {
-		return multiWindow;
+		return getIntCapability(KEY_TIMEOUT, 360);
 	}
 
 	/**
@@ -81,7 +63,7 @@ public class DefaultSeleniumProperties implements SeleniumProperties,
 	 *            the browserURL to set
 	 */
 	public void setBrowserURL(String browserURL) {
-		this.browserURL = browserURL;
+		getCapabilities().put(SeleniumProperties.KEY_BROWSER_URL, browserURL);
 	}
 
 	/**
@@ -89,75 +71,36 @@ public class DefaultSeleniumProperties implements SeleniumProperties,
 	 *            the timeoutInSeconds to set
 	 */
 	public void setTimeoutInSeconds(int timeoutInSeconds) {
-		this.timeoutInSeconds = timeoutInSeconds;
-	}
-
-	/**
-	 * @param multiWindow
-	 *            the multiWindow to set
-	 */
-	public void setMultiWindow(boolean multiWindow) {
-		this.multiWindow = multiWindow;
-	}
-
-	/**
-	 * @return the userExtensions
-	 */
-	public String getUserExtensions() {
-		return userExtensions;
-	}
-
-	/**
-	 * @param userExtensions
-	 *            the userExtensions to set
-	 */
-	public void setUserExtensions(String userExtensions) {
-		this.userExtensions = userExtensions;
-	}
-
-	/**
-	 * @return the port
-	 */
-	public int getPort() {
-		return port;
-	}
-
-	/**
-	 * @param port
-	 *            the port to set
-	 */
-	public void setPort(int port) {
-		this.port = port;
+		getCapabilities().put(SeleniumProperties.KEY_TIMEOUT, timeoutInSeconds);
 	}
 
 	@Override
-	public Map<String, ?> getBrowserCapabilities() {
-		return browserCapabilities;
+	public Map<String, Object> getCapabilities() {
+		return capabilities;
 	}
 
-	public void setBrowserCapabilities(Map<String, ?> browserCapabilities) {
-		this.browserCapabilities = browserCapabilities;
+	public void setCapabilities(Map<String, ?> capabilities) {
+		this.capabilities = new HashMap<String, Object>(capabilities);
 	}
 
-	@Override
-	public Properties getAsProperties() {
-		Properties props = new Properties();
-		for (Method m : SeleniumProperties.class.getMethods()) {
-			if (m.isAnnotationPresent(MapToProperty.class)) {
-				String name = m.getAnnotation(MapToProperty.class).name();
-				try {
-					props.setProperty(name, m.invoke(this) + "");
-				} catch (Exception e) {
-					log.error("Can't access selenium property: " + name, e);
-				}
+	protected String getStrCapability(String key, String defaultValue) {
+		Object v = getCapabilities().get(key);
+		if (v != null) {
+			return v.toString();
+		} else {
+			return defaultValue;
+		}
+	}
+
+	protected int getIntCapability(String key, int defaultValue) {
+		Object v = getCapabilities().get(key);
+		if (v != null) {
+			if (v instanceof Integer) {
+				return (Integer) v;
+			} else if (NumberUtils.isNumber(v.toString())) {
+				return Integer.parseInt(v.toString());
 			}
 		}
-		if (getBrowserCapabilities() != null) {
-			for (String k : getBrowserCapabilities().keySet()) {
-				props.setProperty(k, getBrowserCapabilities().get(k).toString());
-			}
-		}
-		return props;
+		return defaultValue;
 	}
-
 }

@@ -18,7 +18,7 @@ package org.selunit;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.selunit.report.server.ExtSeleniumServer;
+import org.selunit.rc.report.server.ExtSeleniumServer;
 
 
 /**
