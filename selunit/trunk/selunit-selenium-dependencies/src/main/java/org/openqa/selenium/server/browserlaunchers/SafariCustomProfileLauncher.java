@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Software Freedom Conservatory.
+ * Copyright 2011 Software Freedom Conservancy.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,6 +42,29 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
+	// **************START SELUNIT PATCH**********************
+	@Override
+	public void launchHTMLSuite(String suiteUrl, String browserURL) {
+		if (!browserConfigurationOptions.is("honorSystemProxy")) {
+			/**
+			 * Route test suite URL to proxy if Safari runs in proxy mode.
+			 * Access to Selenium server by "http://localhost:YYY" will fail on
+			 * Win7 due same-origin policy with an error like: Unsafe JavaScript
+			 * attempt to access frame with URL ...
+			 */
+			if (suiteUrl.startsWith("http://localhost:"
+					+ getConfiguration().getPort())) {
+				suiteUrl = suiteUrl.replace("http://localhost:"
+						+ getConfiguration().getPort(),
+						Urls.toProtocolHostAndPort(browserURL));
+			}
+		}
+		super.launchHTMLSuite(suiteUrl, browserURL);
+	}
+
+	// **************END SELUNIT PATCH**********************
+
+	
 	private final static Logger log = Logger
 			.getLogger(SafariCustomProfileLauncher.class.getName());
 
@@ -85,28 +108,6 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
 		customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
 	}
-
-	// **************START SELUNIT PATCH**********************
-	@Override
-	public void launchHTMLSuite(String suiteUrl, String browserURL) {
-		if (!browserConfigurationOptions.is("honorSystemProxy")) {
-			/**
-			 * Route test suite URL to proxy if Safari runs in proxy mode.
-			 * Access to Selenium server by "http://localhost:YYY" will fail on
-			 * Win7 due same-origin policy with an error like: Unsafe JavaScript
-			 * attempt to access frame with URL ...
-			 */
-			if (suiteUrl.startsWith("http://localhost:"
-					+ getConfiguration().getPort())) {
-				suiteUrl = suiteUrl.replace("http://localhost:"
-						+ getConfiguration().getPort(),
-						Urls.toProtocolHostAndPort(browserURL));
-			}
-		}
-		super.launchHTMLSuite(suiteUrl, browserURL);
-	}
-
-	// **************END SELUNIT PATCH**********************
 
 	@Override
 	protected void launch(String url) {
