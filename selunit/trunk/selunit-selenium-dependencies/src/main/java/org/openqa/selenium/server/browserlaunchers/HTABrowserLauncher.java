@@ -1,6 +1,18 @@
 /*
- * Created on May 14, 2006
- *
+Copyright 2006-2012 Selenium committers
+Copyright 2006-2012 Software Freedom Conservancy
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
 package org.openqa.selenium.server.browserlaunchers;
 
@@ -16,6 +28,7 @@ import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.browserlaunchers.locators.InternetExplorerLocator;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.WindowsProcessGroup;
 import org.openqa.selenium.os.WindowsUtils;
 import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -27,8 +40,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
 	private String sessionId;
 	private File dir;
 	private String htaCommandPath;
-	private CommandLine htaProcess;
-	private CommandLine iexploreProcess;
+	private WindowsProcessGroup htaProcess;
+	private WindowsProcessGroup iexploreProcess;
 	private RemoteControlConfiguration configuration;
 	private Capabilities browserOptions;
 
@@ -55,7 +68,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
 		if (defaultLocation.exists()) {
 			return defaultLocation.getAbsolutePath();
 		}
-		String mshtaEXE = CommandLine.findExecutable("mshta.exe");
+		String mshtaEXE = CommandLine.find("mshta.exe");
 		if (mshtaEXE != null)
 			return mshtaEXE;
 		throw new RuntimeException(
@@ -71,12 +84,12 @@ public class HTABrowserLauncher implements BrowserLauncher {
 		createHTAFiles();
 		String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
 		log.info("Launching Embedded Internet Explorer...");
-		iexploreProcess = new CommandLine(new InternetExplorerLocator()
+		iexploreProcess = new WindowsProcessGroup(new InternetExplorerLocator()
 				.findBrowserLocationOrFail().launcherFilePath(), "-Embedding");
 		iexploreProcess.executeAsync();
 		log.info("Launching Internet Explorer HTA...");
 
-		htaProcess = new CommandLine(htaCommandPath, hta, query);
+		htaProcess = new WindowsProcessGroup(htaCommandPath, hta, query);
 		htaProcess.executeAsync();
 	}
 
