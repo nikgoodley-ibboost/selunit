@@ -18,7 +18,7 @@ package org.selunit.report.output.xml;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Properties;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -113,11 +113,11 @@ public class DefaultOutputHandler implements XMLOutputHandler<TestSuiteReport> {
 
 		Element seleniumEl = new Element("selenium");
 		jobEl.addContent(seleniumEl);
-		Properties selProps = jobInfo.getSeleniumProperties().getAsProperties();
-		for (String name : selProps.stringPropertyNames()) {
+		Map<String,?> selProps = jobInfo.getSeleniumProperties().getCapabilities();
+		for (String name : selProps.keySet()) {
 			Element propEl = new Element(NODE_PROP);
 			propEl.setAttribute(NODE_PROP_ATT_NAME, name);
-			propEl.setAttribute(NODE_PROP_ATT_VALUE, selProps.getProperty(name));
+			propEl.setAttribute(NODE_PROP_ATT_VALUE, selProps.get(name).toString());
 			seleniumEl.addContent(propEl);
 		}
 		return jobEl;

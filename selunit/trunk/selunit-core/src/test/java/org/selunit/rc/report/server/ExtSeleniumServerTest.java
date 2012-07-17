@@ -13,38 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.selunit.config;
+package org.selunit.rc.report.server;
 
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.selunit.config.support.DefaultSeleniumProperties;
+import org.openqa.jetty.util.IO;
+import org.selunit.ServerLauncherTest;
+import org.selunit.rc.report.server.ExtSeleniumServer;
+
 
 /**
- * Test for {@link DefaultSeleniumProperties}.
+ * Tests {@link ExtSeleniumServer}.
  * 
  * @author mbok
  * 
  */
-public class DefaultSeleniumPropertiesTest {
+public class ExtSeleniumServerTest extends ServerLauncherTest {
+
 	/**
-	 * Tests {@link DefaultSeleniumProperties#getAsProperties()} method.
+	 * Tests merging of /core/scripts/selenium-testrunner.js.
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void testProperties() throws Exception {
-		DefaultSeleniumProperties props = new DefaultSeleniumProperties();
-		props.setBrowserURL("http://localhost:8080");
-		props.setTimeoutInSeconds(123);
-		Map<String, ?> exportedProps = props.getCapabilities();
-		Assert.assertEquals("http://localhost:8080", props.getBrowserURL());
-		Assert.assertEquals("http://localhost:8080",
-				exportedProps.get(DefaultSeleniumProperties.KEY_BROWSER_URL));
-		Assert.assertEquals(123,
-				exportedProps.get(DefaultSeleniumProperties.KEY_TIMEOUT));
-		Assert.assertEquals(123, props.getTimeoutInSeconds());
+	public void testMergingSeleniumTestrunnerJs() throws Exception {
+		URL extSeleniumTestrunner = new URL("http://localhost:"
+				+ getServer().getPort()
+				+ "/selenium-server/core/scripts/selenium-testrunner.js");
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		IO.copy(extSeleniumTestrunner.openConnection().getInputStream(), out);
+		String jsLines[] = new String(out.toByteArray()).trim().split("\\n");
+		Assert.assertEquals("/** END REPORTING EXTENSIONS **/",
+				jsLines[jsLines.length - 1]);
 	}
 }

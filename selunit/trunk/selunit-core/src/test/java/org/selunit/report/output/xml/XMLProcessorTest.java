@@ -52,7 +52,6 @@ public class XMLProcessorTest {
 		suite.setTestCases(Collections.EMPTY_LIST);
 
 		DefaultSeleniumProperties props = new DefaultSeleniumProperties();
-		props.setBrowserKey("*firefox");
 		DefaultTestJob job = new DefaultTestJob();
 		job.setName("TT1");
 		job.setId("123456789");
