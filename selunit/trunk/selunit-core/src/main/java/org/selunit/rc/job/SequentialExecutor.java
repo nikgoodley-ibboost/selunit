@@ -103,6 +103,9 @@ public class SequentialExecutor<J extends TestJob> extends
 										"Error during processing report output for suite: "
 												+ suite.getName(), e);
 							} catch (Throwable e) {
+								log.error(
+										"Failed to execute suite: "
+												+ suite.getName(), e);
 								throw new TestJobException(job,
 										"Failed to execute suite: "
 												+ suite.getName(), e);
@@ -130,17 +133,19 @@ public class SequentialExecutor<J extends TestJob> extends
 					}
 					throw e;
 				} finally {
-					if (getStatus().getType() == StatusType.EXECUTING_SUITES) {
-						getStatus().setType(StatusType.FINISHED_SUITES);
-					}
-					try {
-						log.info("Finished job execution: " + job);
-						for (JobExecutorHandler<J> h : getHandlers()) {
-							h.finishExecution(job, getStatus());
+					synchronized (SequentialExecutor.class) {
+						if (getStatus().getType() == StatusType.EXECUTING_SUITES) {
+							getStatus().setType(StatusType.FINISHED_SUITES);
 						}
-					} finally {
-						if (getStatus().getType() == StatusType.STOPPING) {
-							SequentialExecutor.this.stop(true, false);
+						try {
+							log.info("Finished job execution: " + job);
+							for (JobExecutorHandler<J> h : getHandlers()) {
+								h.finishExecution(job, getStatus());
+							}
+						} finally {
+							if (getStatus().getType() == StatusType.STOPPING) {
+								SequentialExecutor.this.stop(true, false);
+							}
 						}
 					}
 				}
@@ -155,7 +160,7 @@ public class SequentialExecutor<J extends TestJob> extends
 	}
 
 	@Override
-	public void init(J job) throws TestJobException {
+	synchronized public void init(J job) throws TestJobException {
 		if (getStatus().getType() == StatusType.STOPPED) {
 			this.job = job;
 			init();
@@ -165,7 +170,7 @@ public class SequentialExecutor<J extends TestJob> extends
 		}
 	}
 
-	private void init() throws TestJobException {
+	synchronized private void init() throws TestJobException {
 		getStatus().setType(StatusType.INITIALIZING);
 		log.info("Initializing executor for job: " + job);
 		if (server == null) {
@@ -190,13 +195,8 @@ public class SequentialExecutor<J extends TestJob> extends
 		getStatus().setType(StatusType.INITIALIZED);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.selunit.execution.InstanceExecutor#start(java.util.List)
-	 */
 	@Override
-	public void start(List<String> suites) throws TestJobException {
+	synchronized public void start(List<String> suites) throws TestJobException {
 		switch (getStatus().getType()) {
 		case FINISHED_SUITES:
 		case INITIALIZED:
