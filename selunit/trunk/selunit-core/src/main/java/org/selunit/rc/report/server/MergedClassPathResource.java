@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.openqa.jetty.util.IO;
-import org.openqa.selenium.browserlaunchers.LauncherUtils;
+import org.openqa.jetty.util.Resource;
 import org.openqa.selenium.server.ClassPathResource;
 
 public class MergedClassPathResource extends ClassPathResource {
@@ -29,13 +29,13 @@ public class MergedClassPathResource extends ClassPathResource {
 	private ByteArrayOutputStream mergedContent = new ByteArrayOutputStream();
 
 	public MergedClassPathResource(String originalResourceClassPath,
-			String attachResourceClassPath) {
+			Resource... mergeResources) {
 		super(originalResourceClassPath);
 		try {
 			IO.copy(super.getInputStream(), mergedContent);
-			IO.copy(LauncherUtils
-					.getSeleniumResourceAsStream(attachResourceClassPath),
-					mergedContent);
+			for (Resource r : mergeResources) {
+				IO.copy(r.getInputStream(), mergedContent);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

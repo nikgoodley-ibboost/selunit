@@ -18,10 +18,12 @@ package org.selunit.rc.report.server;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.jetty.http.HttpContext;
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.ClassPathResource;
 import org.openqa.selenium.server.ResourceLocator;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.StaticContentHandler;
+import org.selunit.config.support.ExtRemoteControlConfiguration;
+import org.selunit.rc.config.CapabilitiesResource;
 
 public class ExtSeleniumServer extends SeleniumServer {
 	private static Log log = LogFactory.getLog(ExtSeleniumServer.class);
@@ -30,20 +32,12 @@ public class ExtSeleniumServer extends SeleniumServer {
 
 	private StaticContentHandler staticContentHandler;
 
-	public ExtSeleniumServer() throws Exception {
-		super();
-	}
-
 	public ExtSeleniumServer(boolean slowResources,
-			RemoteControlConfiguration configuration) throws Exception {
+			ExtRemoteControlConfiguration configuration) throws Exception {
 		super(slowResources, configuration);
 	}
 
-	public ExtSeleniumServer(boolean slowResources) throws Exception {
-		super(slowResources);
-	}
-
-	public ExtSeleniumServer(RemoteControlConfiguration configuration)
+	public ExtSeleniumServer(ExtRemoteControlConfiguration configuration)
 			throws Exception {
 		super(configuration);
 	}
@@ -70,9 +64,14 @@ public class ExtSeleniumServer extends SeleniumServer {
 	public JSMergeClasspathResourceLocator getMergedJsClasspathResourceLocator() {
 		if (jsClasspathResourceLocator == null) {
 			jsClasspathResourceLocator = new JSMergeClasspathResourceLocator();
-			jsClasspathResourceLocator.addMergeJSResource(
-					"/core/scripts/selenium-testrunner.js",
-					"/core/scripts/ext-selenium-testrunner.js");
+			jsClasspathResourceLocator
+					.addMergeJSResource(
+							"/core/scripts/selenium-testrunner.js",
+							new CapabilitiesResource(
+									((ExtRemoteControlConfiguration) getConfiguration())
+											.getBrowserCapabilities()),
+							new ClassPathResource(
+									"/core/scripts/ext-selenium-testrunner.js"));
 		}
 		return jsClasspathResourceLocator;
 	}

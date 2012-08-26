@@ -16,65 +16,6 @@
 
 /** START REPORTING EXTENSIONS * */
 
-HtmlTestSuite.prototype._onTestSuiteComplete = function() {
-	// <--START-CHANGES--
-	new ExtSeleniumTestResult().post();
-	// --END-CHANGES-->
-	this.markDone();
-	new SeleniumTestResult(this.failed, this.getTestTable()).post();
-}
-
-var ExtSeleniumTestResult = classCreate();
-objectExtend(ExtSeleniumTestResult.prototype, {
-
-	// Post the extended results to the extended result handler
-	// bound to "/postExtResults".
-	//
-	// Parameters passed to the results-handler are:
-	// result: passed/failed depending on whether the suite passed or failed
-	// totalTime: the total running time in seconds for the suite.
-	//
-	// numTestPasses: the total number of tests which passed.
-	// numTestFailures: the total number of tests which failed.
-	//
-	// numCommandPasses: the total number of commands which passed.
-	// numCommandFailures: the total number of commands which failed.
-	// numCommandErrors: the total number of commands which errored.
-	//
-	// suite: the suite table, including the hidden column of test results
-	// testTable.1 to testTable.N: the individual test tables
-	//
-	initialize : function() {
-		this.controlPanel = htmlTestRunner.controlPanel;
-	},
-
-	post : function() {
-		if (!this.controlPanel.isAutomatedRun()) {
-			return;
-		}
-		var form = document.createElement("form");
-		document.body.appendChild(form);
-
-		form.id = "extResultsForm";
-		form.method = "post";
-		form.target = "selenium_myiframe";
-
-		form.action = "/selenium-server/postExtResults";
-
-		form.createHiddenField = function(name, value) {
-			input = document.createElement("input");
-			input.type = "hidden";
-			input.name = name;
-			input.value = value;
-			this.appendChild(input);
-		};
-
-		form.createHiddenField("selenium.version", Selenium.version);
-		form.submit();
-		document.body.removeChild(form);
-	}
-});
-
 HtmlRunnerTestLoop.prototype.initialize = function(htmlTestCase, metrics,
 		seleniumCommandFactory) {
 	// <--START-CHANGES--

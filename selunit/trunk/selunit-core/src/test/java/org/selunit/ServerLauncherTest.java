@@ -17,9 +17,9 @@ package org.selunit;
 
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.Capabilities;
+import org.selunit.config.support.ExtRemoteControlConfiguration;
 import org.selunit.rc.report.server.ExtSeleniumServer;
-
 
 /**
  * Super class for test cases working with a selenium server instance
@@ -36,14 +36,24 @@ public abstract class ServerLauncherTest {
 	 * 
 	 * @return Used server configuration.
 	 */
-	protected RemoteControlConfiguration getServerConfiguration() {
-		RemoteControlConfiguration conf = new RemoteControlConfiguration();
+	protected ExtRemoteControlConfiguration getServerConfiguration() {
+		ExtRemoteControlConfiguration conf = new ExtRemoteControlConfiguration();
 		conf.setPort(4449);
 		conf.setSingleWindow(false);
 		conf.setTimeoutInSeconds(11111111);
+		conf.setBrowserCapabilities(getCapabilities());
 		// conf.setUserExtensions(new
 		// File("src/test/resources/user-extensions.js"));
 		return conf;
+	}
+
+	/**
+	 * Overridable in super classes.
+	 * 
+	 * @return capabilities to use in {@link #getServerConfiguration()}.
+	 */
+	protected Capabilities getCapabilities() {
+		return null;
 	}
 
 	/**

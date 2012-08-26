@@ -22,9 +22,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openqa.jetty.util.IO;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.selunit.ServerLauncherTest;
 import org.selunit.rc.report.server.ExtSeleniumServer;
-
 
 /**
  * Tests {@link ExtSeleniumServer}.
@@ -46,8 +47,20 @@ public class ExtSeleniumServerTest extends ServerLauncherTest {
 				+ "/selenium-server/core/scripts/selenium-testrunner.js");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		IO.copy(extSeleniumTestrunner.openConnection().getInputStream(), out);
-		String jsLines[] = new String(out.toByteArray()).trim().split("\\n");
+		String strOut = new String(out.toByteArray());
+		String jsLines[] = strOut.trim().split("\\n");
 		Assert.assertEquals("/** END REPORTING EXTENSIONS **/",
 				jsLines[jsLines.length - 1]);
+		Assert.assertEquals(true, strOut.contains("Selenium.capabilities"));
+		Assert.assertEquals(true, strOut.contains("myCapAttr"));
+		Assert.assertEquals(true, strOut.contains("myCapValue"));
 	}
+
+	@Override
+	protected Capabilities getCapabilities() {
+		DesiredCapabilities caps = new DesiredCapabilities();
+		caps.setCapability("myCapAttr", "myCapValue");
+		return caps;
+	}
+
 }
