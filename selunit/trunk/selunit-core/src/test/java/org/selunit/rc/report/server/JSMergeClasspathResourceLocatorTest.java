@@ -23,7 +23,6 @@ import org.openqa.jetty.util.Resource;
 import org.openqa.selenium.server.ClassPathResource;
 import org.selunit.rc.report.server.JSMergeClasspathResourceLocator;
 
-
 /**
  * Test for {@link JSMergeClasspathResourceLocator}.
  * 
@@ -35,11 +34,12 @@ public class JSMergeClasspathResourceLocatorTest {
 	@Test
 	public void testMerging() throws Exception {
 		JSMergeClasspathResourceLocator locator = new JSMergeClasspathResourceLocator();
-		locator
-				.addMergeJSResource("/SuiteSimple.html",
-						"/test-selenium-logs.log");
-		Assert.assertFalse(locator.getResource(new HttpContext(), "missing").exists());
-		Resource mergedResource = locator.getResource(new HttpContext(), "/SuiteSimple.html");
+		locator.addMergeJSResource("/SuiteSimple.html", new ClassPathResource(
+				"/test-selenium-logs.log"));
+		Assert.assertFalse(locator.getResource(new HttpContext(), "missing")
+				.exists());
+		Resource mergedResource = locator.getResource(new HttpContext(),
+				"/SuiteSimple.html");
 		Assert.assertEquals(true, mergedResource.exists());
 		Assert.assertEquals(new ClassPathResource("/SuiteSimple.html").length()
 				+ new ClassPathResource("/test-selenium-logs.log").length(),

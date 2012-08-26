@@ -28,10 +28,10 @@ public class JSMergeClasspathResourceLocator extends ClasspathResourceLocator {
 	private Map<String, MergedClassPathResource> mergeFiles = new HashMap<String, MergedClassPathResource>();
 
 	public void addMergeJSResource(String originalResourceClassPath,
-			String attachResourceClassPath) {
+			Resource... attachResources) {
 		this.mergeFiles.put(originalResourceClassPath,
 				new MergedClassPathResource(originalResourceClassPath,
-						attachResourceClassPath));
+						attachResources));
 	}
 
 	@Override
