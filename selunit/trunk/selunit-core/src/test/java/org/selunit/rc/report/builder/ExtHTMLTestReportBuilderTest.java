@@ -21,22 +21,22 @@ import org.jsoup.Jsoup;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLTestResults;
 import org.selunit.ServerLauncherTest;
 import org.selunit.job.support.DefaultTestJob;
 import org.selunit.rc.config.RCSeleniumProperties;
-import org.selunit.rc.report.server.ExtHTMLLauncher;
 import org.selunit.report.ResultType;
 import org.selunit.report.TestCaseReport;
 import org.selunit.report.TestSuiteReport;
 
 public class ExtHTMLTestReportBuilderTest extends ServerLauncherTest {
 	private HTMLTestResults testResults;
-	private ExtHTMLLauncher launcher;
+	private HTMLLauncher launcher;
 
 	@Before
 	public void initTestResults() throws Exception {
-		launcher = new ExtHTMLLauncher(getServer());
+		launcher = new HTMLLauncher(getServer());
 		launcher.runHTMLSuite("*firefox", "http://www.google.de", new File(
 				"src/test/resources/SuiteSimple.html"), new File(
 				"target/SuiteSimple.log.html"), 30, true);

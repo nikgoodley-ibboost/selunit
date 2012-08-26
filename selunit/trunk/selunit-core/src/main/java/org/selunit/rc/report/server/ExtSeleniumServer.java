@@ -22,12 +22,9 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.ResourceLocator;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.StaticContentHandler;
-import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 
 public class ExtSeleniumServer extends SeleniumServer {
 	private static Log log = LogFactory.getLog(ExtSeleniumServer.class);
-
-	private ExtHTMLTestResultsHandler extResultsHandler;
 
 	private JSMergeClasspathResourceLocator jsClasspathResourceLocator;
 
@@ -54,25 +51,14 @@ public class ExtSeleniumServer extends SeleniumServer {
 	@Override
 	protected void createJettyServer(boolean slowResources) {
 		super.createJettyServer(slowResources);
-		extResultsHandler = new ExtHTMLTestResultsHandler();
 		HttpContext seleniumContext = getServer()
 				.getContext("/selenium-server");
-		seleniumContext.addHandler(0, extResultsHandler);
 
 		staticContentHandler = (StaticContentHandler) seleniumContext
 				.getHandler(StaticContentHandler.class);
 		if (!addStaticResourceLocator(getMergedJsClasspathResourceLocator())) {
 			throw new RuntimeException(
 					"StaticContentHandler not found in context. Report extensions can't be activated!");
-		}
-	}
-
-	@Override
-	public void handleHTMLRunnerResults(HTMLResultsListener listener) {
-		super.handleHTMLRunnerResults(listener);
-		if (listener instanceof ExtHTMLTestResultsListener) {
-			extResultsHandler
-					.addListener((ExtHTMLTestResultsListener) listener);
 		}
 	}
 
@@ -103,9 +89,8 @@ public class ExtSeleniumServer extends SeleniumServer {
 			staticContentHandler.addStaticContent(locator);
 			return true;
 		} else {
-			log
-					.error("StaticContentHandler undefined, failed to add new resource locator: "
-							+ locator);
+			log.error("StaticContentHandler undefined, failed to add new resource locator: "
+					+ locator);
 			return false;
 		}
 	}
