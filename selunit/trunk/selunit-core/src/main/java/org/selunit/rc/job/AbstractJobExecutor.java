@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.selunit.config.SeleniumProperties;
 import org.selunit.config.support.ExtRemoteControlConfiguration;
 import org.selunit.job.JobExecutor;
@@ -33,7 +34,6 @@ import org.selunit.job.support.DefaultExecutionStatus;
 import org.selunit.rc.config.RCSeleniumProperties;
 import org.selunit.rc.report.builder.BuilderException;
 import org.selunit.rc.report.builder.ExtHTMLTestReportBuilder;
-import org.selunit.rc.report.server.ExtHTMLLauncher;
 import org.selunit.rc.report.server.ExtSeleniumServer;
 import org.selunit.rc.testpackage.TestResourceLocator;
 import org.selunit.report.TestSuiteReport;
@@ -117,7 +117,7 @@ public abstract class AbstractJobExecutor<J extends TestJob> implements
 	 */
 	protected DefaultTestSuite launchSuite(ExtSeleniumServer server,
 			TestJob job, TestResource suiteResource) throws TestJobException {
-		ExtHTMLLauncher launcher = new ExtHTMLLauncher(server);
+		HTMLLauncher launcher = new HTMLLauncher(server);
 		RCSeleniumProperties selProps = new RCSeleniumProperties(
 				job.getSeleniumProperties());
 		try {
