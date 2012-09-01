@@ -37,7 +37,12 @@ public enum ResultType {
 	/**
 	 * Indicates a currently running test.
 	 */
-	EXECUTING("executing");
+	EXECUTING("executing"),
+	
+	/**
+	 * Indicates a not run test.
+	 */
+	NOT_RUN("not-run");
 
 	private String stringValue;
 

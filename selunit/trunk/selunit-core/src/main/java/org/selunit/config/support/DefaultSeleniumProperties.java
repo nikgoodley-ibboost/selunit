@@ -34,6 +34,9 @@ public class DefaultSeleniumProperties implements SeleniumProperties,
 	private static final long serialVersionUID = 3663780060638078002L;
 
 	private Map<String, Object> capabilities = new HashMap<String, Object>();
+	{
+		setTimeoutInSeconds(360);
+	}
 
 	public DefaultSeleniumProperties() {
 		super();
