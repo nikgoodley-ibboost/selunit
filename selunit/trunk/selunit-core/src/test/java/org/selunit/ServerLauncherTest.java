@@ -18,7 +18,9 @@ package org.selunit;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.selunit.config.support.ExtRemoteControlConfiguration;
+import org.selunit.rc.config.RCSeleniumProperties;
 import org.selunit.rc.report.server.ExtSeleniumServer;
 
 /**
@@ -53,7 +55,8 @@ public abstract class ServerLauncherTest {
 	 * @return capabilities to use in {@link #getServerConfiguration()}.
 	 */
 	protected Capabilities getCapabilities() {
-		return null;
+		return new DesiredCapabilities(
+				new RCSeleniumProperties().getCapabilities());
 	}
 
 	/**

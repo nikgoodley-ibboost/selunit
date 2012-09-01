@@ -30,12 +30,16 @@ public class RCSeleniumProperties extends DefaultSeleniumProperties {
 	public static final String KEY_MULTI_WINDOW = "multiWindow";
 	public static final String KEY_PORT = "port";
 	public static final String KEY_USER_EXT = "userExtensions";
+	public static final String KEY_FAIL_FAST = "failFast";
 
 	/**
 	 * Instantiates an empty instance with defaults.
 	 */
 	public RCSeleniumProperties() {
 		super();
+		setMultiWindow(true);
+		setFailFast(true);
+		setPort(4449);
 	}
 
 	/**
@@ -62,6 +66,27 @@ public class RCSeleniumProperties extends DefaultSeleniumProperties {
 
 	public void setMultiWindow(boolean multiWindow) {
 		getCapabilities().put(KEY_MULTI_WINDOW, multiWindow);
+
+	}
+
+	/**
+	 * Indicates if test should fail immediately after first error.
+	 * 
+	 * @return true (default behaviour) if test should fail immediately after
+	 *         first error.
+	 */
+	public boolean isFailFast() {
+		return "true".equals(getStrCapability(KEY_FAIL_FAST, "true"));
+	}
+
+	/**
+	 * Sets fail fast attribute.
+	 * 
+	 * @param failFast
+	 *            true if test should fail immediately after first error.
+	 */
+	public void setFailFast(boolean failFast) {
+		getCapabilities().put(KEY_FAIL_FAST, failFast);
 
 	}
 
