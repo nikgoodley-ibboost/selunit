@@ -21,7 +21,6 @@ import org.selunit.report.ResultType;
 import org.selunit.report.TestCaseReport;
 import org.selunit.report.TestReportLog;
 
-
 public class DefaultTestCase implements TestCaseReport, Serializable {
 	private static final long serialVersionUID = 1425513081555678875L;
 	private String name;
@@ -30,6 +29,7 @@ public class DefaultTestCase implements TestCaseReport, Serializable {
 	private ResultType resultType;
 	private TestReportLog resultLog;
 	private long startTime, endTime;
+	private String resultMessage;
 
 	public DefaultTestCase() {
 		super();
@@ -43,6 +43,7 @@ public class DefaultTestCase implements TestCaseReport, Serializable {
 		this.resultLog = copy.getResultLog();
 		this.startTime = copy.getStartTime();
 		this.endTime = copy.getEndTime();
+		this.resultMessage = copy.getResultMessage();
 	}
 
 	@Override
@@ -120,6 +121,22 @@ public class DefaultTestCase implements TestCaseReport, Serializable {
 	 */
 	public void setEndTime(long endTime) {
 		this.endTime = endTime;
+	}
+
+	/**
+	 * @return the resultMessage
+	 */
+	@Override
+	public String getResultMessage() {
+		return resultMessage;
+	}
+
+	/**
+	 * @param resultMessage
+	 *            the resultMessage to set
+	 */
+	public void setResultMessage(String resultMessage) {
+		this.resultMessage = resultMessage;
 	}
 
 	@Override

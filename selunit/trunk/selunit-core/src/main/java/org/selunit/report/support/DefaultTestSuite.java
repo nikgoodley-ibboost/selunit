@@ -16,13 +16,13 @@
 package org.selunit.report.support;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.selunit.job.TestJobInfo;
 import org.selunit.report.ResultType;
 import org.selunit.report.TestCaseReport;
 import org.selunit.report.TestSuiteReport;
-
 
 /**
  * Default bean for a suite report. The initialized result type is
@@ -35,12 +35,13 @@ public class DefaultTestSuite implements TestSuiteReport, Serializable {
 	private static final long serialVersionUID = -3604847684180175466L;
 	private String name;
 	private double time;
-	private List<TestCaseReport> testCases;
+	private List<TestCaseReport> testCases = new ArrayList<TestCaseReport>();
 	private TestJobInfo jobInfo;
 	private long startTime, endTime;
 	private ResultType resultType = ResultType.EXECUTING;
 	private String fileName;
 	private int iterationCount = 1;
+	private String resultMessage;
 
 	public DefaultTestSuite() {
 		super();
@@ -56,6 +57,7 @@ public class DefaultTestSuite implements TestSuiteReport, Serializable {
 		this.resultType = copy.getResultType();
 		this.fileName = copy.getFileName();
 		this.iterationCount = copy.getIterationCount();
+		this.resultMessage = copy.getResultMessage();
 	}
 
 	@Override
@@ -172,6 +174,22 @@ public class DefaultTestSuite implements TestSuiteReport, Serializable {
 	 */
 	public void setIterationCount(int iterationCount) {
 		this.iterationCount = iterationCount;
+	}
+
+	/**
+	 * @return the resultMessage
+	 */
+	@Override
+	public String getResultMessage() {
+		return resultMessage;
+	}
+
+	/**
+	 * @param resultMessage
+	 *            the resultMessage to set
+	 */
+	public void setResultMessage(String resultMessage) {
+		this.resultMessage = resultMessage;
 	}
 
 	@Override

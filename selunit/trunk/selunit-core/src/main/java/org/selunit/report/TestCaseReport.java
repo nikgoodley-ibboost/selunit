@@ -16,7 +16,7 @@
 package org.selunit.report;
 
 public interface TestCaseReport {
-	
+
 	public String getName();
 
 	public String getFileName();
@@ -24,6 +24,8 @@ public interface TestCaseReport {
 	public double getTime();
 
 	public ResultType getResultType();
+
+	public String getResultMessage();
 
 	public TestReportLog getResultLog();
 

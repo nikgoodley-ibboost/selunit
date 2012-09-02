@@ -28,6 +28,7 @@ import org.selunit.job.TestJob;
 import org.selunit.job.TestJobException;
 import org.selunit.job.support.DefaultExecutionStatus;
 import org.selunit.rc.report.server.ExtSeleniumServer;
+import org.selunit.report.ResultType;
 import org.selunit.report.output.OutputProcessException;
 import org.selunit.report.support.DefaultTestSuite;
 import org.selunit.testpackage.TestResource;
@@ -80,6 +81,9 @@ public class SequentialExecutor<J extends TestJob> extends
 							}
 							DefaultTestSuite report = new DefaultTestSuite();
 							report.setName(suitePath);
+							report.setFileName(suitePath);
+							report.setStartTime(System.currentTimeMillis());
+							report.setResultType(ResultType.EXECUTING);
 							for (JobExecutorHandler<J> h : getHandlers()) {
 								h.startTestSuite(job, suitePath);
 							}
@@ -110,11 +114,24 @@ public class SequentialExecutor<J extends TestJob> extends
 										"Failed to execute suite: "
 												+ suite.getName(), e);
 							} finally {
-								if (getStatus().getType() != StatusType.STOPPED) {
-									for (JobExecutorHandler<J> h : getHandlers()) {
-										h.finishTestSuite(job, suitePath,
-												report);
+								// Finalize report if not filled properly
+								if (report.getEndTime() <= 0) {
+									report.setEndTime(System
+											.currentTimeMillis());
+									report.setTime((report.getEndTime() - report
+											.getStartTime()) / 1000);
+								}
+								if (report.getResultType() == ResultType.EXECUTING) {
+									if (getStatus().getType() == StatusType.STOPPED) {
+										report.setResultType(ResultType.CANCELED);
+										report.setResultMessage("Cancelled by user");
+									} else {
+										report.setResultType(ResultType.FAILED);
+										report.setResultMessage("Unresolvable termination");
 									}
+								}
+								for (JobExecutorHandler<J> h : getHandlers()) {
+									h.finishTestSuite(job, suitePath, report);
 								}
 							}
 							if (getStatus().getType() != StatusType.EXECUTING_SUITES) {
