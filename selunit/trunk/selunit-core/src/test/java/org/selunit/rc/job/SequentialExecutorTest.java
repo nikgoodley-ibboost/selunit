@@ -155,6 +155,7 @@ public class SequentialExecutorTest {
 		ArrayList<JobExecutorHandler<DefaultTestJob>> handlers = new ArrayList<JobExecutorHandler<DefaultTestJob>>();
 		final ArrayList<Boolean> startedSuite = new ArrayList<Boolean>();
 		final ArrayList<TestJob> initedJob = new ArrayList<TestJob>();
+		final ArrayList<TestSuiteReport> reports = new ArrayList<TestSuiteReport>();
 		handlers.add(new JobHandlerAdapter<DefaultTestJob>() {
 
 			@Override
@@ -172,6 +173,13 @@ public class SequentialExecutorTest {
 			public void stopJob(DefaultTestJob job) throws TestJobException {
 				initedJob.remove(job);
 			}
+
+			@Override
+			public void finishTestSuite(DefaultTestJob job, String suitePath,
+					TestSuiteReport report) throws TestJobException {
+				reports.add(report);
+			}
+
 		});
 		exec.setHandlers(handlers);
 		Assert.assertEquals(0, initedJob.size());
@@ -192,6 +200,18 @@ public class SequentialExecutorTest {
 			}
 		}
 		Assert.assertEquals(0, initedJob.size());
+
+		// Verify report
+		Assert.assertEquals(1, reports.size());
+		TestSuiteReport r = reports.get(0);
+		Assert.assertEquals("SuiteLongDummyWait.html", r.getFileName());
+		Assert.assertEquals("SuiteLongDummyWait.html", r.getName());
+		Assert.assertEquals(0, r.getTestCases().size());
+		Assert.assertTrue(r.getStartTime() > 0);
+		Assert.assertTrue(r.getEndTime() > r.getStartTime());
+		Assert.assertTrue(r.getTime() > 0);
+		Assert.assertEquals(ResultType.CANCELED, r.getResultType());
+		Assert.assertEquals("Cancelled by user", r.getResultMessage());
 	}
 
 	@Test

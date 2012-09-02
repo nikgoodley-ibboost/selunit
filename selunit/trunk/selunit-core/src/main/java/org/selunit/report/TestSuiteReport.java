@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.selunit.job.TestJobInfo;
 
-
 public interface TestSuiteReport {
 	public String getName();
 
@@ -36,6 +35,9 @@ public interface TestSuiteReport {
 	public long getEndTime();
 
 	public ResultType getResultType();
-	
+
+	public String getResultMessage();
+
 	public int getIterationCount();
+
 }
