@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.selunit.job.JobExecutorHandler;
 import org.selunit.job.JobStatus.StatusType;
 import org.selunit.job.TestJob;
@@ -84,6 +85,7 @@ public class SequentialExecutor<J extends TestJob> extends
 							report.setFileName(suitePath);
 							report.setStartTime(System.currentTimeMillis());
 							report.setResultType(ResultType.EXECUTING);
+							report.setJobInfo(job);
 							for (JobExecutorHandler<J> h : getHandlers()) {
 								h.startTestSuite(job, suitePath);
 							}
@@ -103,16 +105,21 @@ public class SequentialExecutor<J extends TestJob> extends
 									log.debug("No report output processor configured");
 								}
 							} catch (OutputProcessException e) {
+								report.setResultMessage("Error during processing report output for suite: "
+										+ suite.getName());
 								throw new TestJobException(job,
-										"Error during processing report output for suite: "
-												+ suite.getName(), e);
+										report.getResultMessage(), e);
 							} catch (Throwable e) {
-								log.error(
-										"Failed to execute suite: "
-												+ suite.getName(), e);
+								if (e instanceof SeleniumCommandTimedOutException
+										|| e.getCause() instanceof SeleniumCommandTimedOutException) {
+									report.setResultMessage("Timeout exception for suite: "
+											+ suite.getName());
+								} else {
+									report.setResultMessage("Failed to execute suite: "
+											+ suite.getName());
+								}
 								throw new TestJobException(job,
-										"Failed to execute suite: "
-												+ suite.getName(), e);
+										report.getResultMessage(), e);
 							} finally {
 								// Finalize report if not filled properly
 								if (report.getEndTime() <= 0) {
@@ -127,7 +134,9 @@ public class SequentialExecutor<J extends TestJob> extends
 										report.setResultMessage("Cancelled by user");
 									} else {
 										report.setResultType(ResultType.FAILED);
-										report.setResultMessage("Unresolvable termination");
+										if (report.getResultMessage() == null) {
+											report.setResultMessage("Unresolvable termination");
+										}
 									}
 								}
 								for (JobExecutorHandler<J> h : getHandlers()) {
