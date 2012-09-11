@@ -58,9 +58,9 @@
 		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
-		<connection>scm:svn:http://selunit.googlecode.com/svn/selunit/tags/selunit-core-0.7.2-SNAPSHOT</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/selunit-core-0.7.2-SNAPSHOT</developerConnection>
-		<url>http://selunit.googlecode.com/svn/selunit/tags/selunit-core-0.7.2-SNAPSHOT</url>
+		<connection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-core</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-core</developerConnection>
+		<url>https://selunit.googlecode.com/svn/selunit/trunk/selunit-core</url>
 	</scm>
 
 	<properties>
