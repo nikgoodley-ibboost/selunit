@@ -57,6 +57,24 @@
 		<url>https://selunit.googlecode.com/svn/selunit/trunk/selunit-root/</url>
 	</scm>
 
+	<properties>
+		<selunit.dist.snapshotRepository>${sonatypeOssDistMgmtSnapshotsUrl}</selunit.dist.snapshotRepository>
+		<selunit.dist.releaseRepository>https://oss.sonatype.org/service/local/staging/deploy/maven2/</selunit.dist.releaseRepository>
+	</properties>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>selunit-snapshots</id>
+			<name>Selunit Snapshots Repository</name>
+			<url>${selunit.dist.snapshotRepository}</url>
+		</snapshotRepository>
+		<repository>
+			<id>selunit-releases</id>
+			<name>Selunit Release Repository</name>
+			<url>${selunit.dist.releaseRepository}</url>
+		</repository>
+	</distributionManagement>
+	
 	<build>
 		<testResources>
 			<testResource>
