@@ -113,7 +113,7 @@
 					<configuration>
 						<mavenExecutorId>forked-path</mavenExecutorId>
 						<useReleaseProfile>false</useReleaseProfile>
-						<arguments>-Psonatype-oss-release -Dgpg.passphrase=${gpg.passphrase}</arguments>
+						<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
 						<tagNameFormat>releases/@{project.version}</tagNameFormat>
 						<username>${selunit.scm.username}</username>
 						<password>${selunit.scm.password}</password>
