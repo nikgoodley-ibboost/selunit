@@ -72,7 +72,8 @@ public class DefaultTestProject implements TestProject, Serializable {
 	@Override
 	public boolean equals(Object obj) {
 		return getId() != null && obj instanceof TestProject
-				&& getId().equals(((TestProject) obj).getId());
+				&& getId().equals(((TestProject) obj).getId()) ? true : super
+				.equals(obj);
 	}
 
 	@Override
