@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import org.selunit.TestProject;
 
-
 /**
  * Default bean for a test project.
  * 
@@ -68,6 +67,22 @@ public class DefaultTestProject implements TestProject, Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return getId() != null && obj instanceof TestProject
+				&& getId().equals(((TestProject) obj).getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getId() != null ? getId().hashCode() : super.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return getName() + "[id=" + getId() + "]";
 	}
 
 }
