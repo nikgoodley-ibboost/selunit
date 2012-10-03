@@ -131,9 +131,11 @@ public class ExtHTMLTestReportBuilder {
 				titleRow.addClass(CSS_CLASS_STATUS_NOT_RUN);
 			}
 
-			DefaultResultLog cLog = new DefaultResultLog(ci.select("td:eq(0)")
-					.html(), "");
+			DefaultResultLog cLog = new DefaultResultLog("", "");
 			if (co.getResultType() != ResultType.NOT_RUN) {
+				ci.select("table").removeAttr("border")
+						.removeAttr("cellpadding").removeAttr("cellspacing");
+				cLog.setHtmlSummary(ci.select("tr>td>div").html());
 				// Case logs and timestamps
 				if (caseLogs.size() > 0) {
 					CaseLogPair logPair = caseLogs.remove(0);

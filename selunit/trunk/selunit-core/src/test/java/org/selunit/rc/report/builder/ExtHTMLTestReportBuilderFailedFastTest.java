@@ -100,6 +100,8 @@ public class ExtHTMLTestReportBuilderFailedFastTest extends ServerLauncherTest {
 				.replace('\u00A0', ' ');
 		Assert.assertEquals("Element qnull not found", errorMsg);
 		Assert.assertTrue(tc.getStartTime() < tc.getEndTime());
+		Assert.assertTrue(tc.getResultLog().getHtmlSummary().trim()
+				.endsWith("table>"));
 
 		// TestCase: GoogleSearch2
 		tc = suite.getTestCases().get(1);
@@ -108,7 +110,7 @@ public class ExtHTMLTestReportBuilderFailedFastTest extends ServerLauncherTest {
 		Assert.assertEquals("testcases/GoogleSearch2.html", tc.getFileName());
 		Assert.assertEquals(ResultType.NOT_RUN, tc.getResultType());
 		Assert.assertEquals("GoogleSearch2", tc.getName());
-		Assert.assertTrue(tc.getResultLog().getHtmlSummary().indexOf("Not run") > 0);
+		Assert.assertEquals(0, tc.getResultLog().getHtmlSummary().length());
 
 		// TestCase: GoogleSearch3
 		tc = suite.getTestCases().get(2);
@@ -117,6 +119,6 @@ public class ExtHTMLTestReportBuilderFailedFastTest extends ServerLauncherTest {
 		Assert.assertEquals("testcases/GoogleSearch3.html", tc.getFileName());
 		Assert.assertEquals(ResultType.NOT_RUN, tc.getResultType());
 		Assert.assertEquals("GoogleSearch3", tc.getName());
-		Assert.assertTrue(tc.getResultLog().getHtmlSummary().indexOf("Not run") > 0);
+		Assert.assertEquals(0, tc.getResultLog().getHtmlSummary().length());
 	}
 }
