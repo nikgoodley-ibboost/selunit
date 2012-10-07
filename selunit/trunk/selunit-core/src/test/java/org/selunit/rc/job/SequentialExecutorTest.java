@@ -211,7 +211,7 @@ public class SequentialExecutorTest {
 		Assert.assertTrue(r.getEndTime() > r.getStartTime());
 		Assert.assertTrue(r.getTime() > 0);
 		Assert.assertEquals(ResultType.CANCELED, r.getResultType());
-		Assert.assertEquals("Cancelled by user", r.getResultMessage());
+		Assert.assertEquals("Canceled by user", r.getResultMessage());
 	}
 
 	@Test
