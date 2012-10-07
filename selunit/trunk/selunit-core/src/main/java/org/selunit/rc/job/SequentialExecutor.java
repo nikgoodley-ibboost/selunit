@@ -131,7 +131,7 @@ public class SequentialExecutor<J extends TestJob> extends
 								if (report.getResultType() == ResultType.EXECUTING) {
 									if (getStatus().getType() == StatusType.STOPPED) {
 										report.setResultType(ResultType.CANCELED);
-										report.setResultMessage("Cancelled by user");
+										report.setResultMessage("Canceled by user");
 									} else {
 										report.setResultType(ResultType.FAILED);
 										if (report.getResultMessage() == null) {
