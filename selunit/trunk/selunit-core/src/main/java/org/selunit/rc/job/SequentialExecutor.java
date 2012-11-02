@@ -114,12 +114,14 @@ public class SequentialExecutor<J extends TestJob> extends
 										|| e.getCause() instanceof SeleniumCommandTimedOutException) {
 									report.setResultMessage("Timeout exception for suite: "
 											+ suite.getName());
+									log.info(report.getResultMessage()
+											+ " - job: " + job);
 								} else {
 									report.setResultMessage("Failed to execute suite: "
 											+ suite.getName());
+									throw new TestJobException(job,
+											report.getResultMessage(), e);
 								}
-								throw new TestJobException(job,
-										report.getResultMessage(), e);
 							} finally {
 								// Finalize report if not filled properly
 								if (report.getEndTime() <= 0) {
