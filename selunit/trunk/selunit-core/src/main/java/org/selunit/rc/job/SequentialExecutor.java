@@ -89,6 +89,7 @@ public class SequentialExecutor<J extends TestJob> extends
 							for (JobExecutorHandler<J> h : getHandlers()) {
 								h.startTestSuite(job, suitePath);
 							}
+							long startTmst = System.currentTimeMillis();
 							try {
 								try {
 									log.info("Launching suite: "
@@ -124,6 +125,11 @@ public class SequentialExecutor<J extends TestJob> extends
 								}
 							} finally {
 								// Finalize report if not filled properly
+								if (report.getStartTime() <= 0) {
+									log.warn("Missing start time in report for suite: "
+											+ suite.getName());
+									report.setStartTime(startTmst);
+								}
 								if (report.getEndTime() <= 0) {
 									report.setEndTime(System
 											.currentTimeMillis());
