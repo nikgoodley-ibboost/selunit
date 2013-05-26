@@ -60,6 +60,7 @@
 	<properties>
 		<selunit.dist.snapshotRepository>${sonatypeOssDistMgmtSnapshotsUrl}</selunit.dist.snapshotRepository>
 		<selunit.dist.releaseRepository>https://oss.sonatype.org/service/local/staging/deploy/maven2/</selunit.dist.releaseRepository>
+		<skipTests>true</skipTests>
 	</properties>
 
 	<distributionManagement>
