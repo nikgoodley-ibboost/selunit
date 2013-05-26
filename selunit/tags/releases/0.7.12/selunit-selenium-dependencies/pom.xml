@@ -1,0 +1,193 @@
+<!--
+  Copyright 2011 selunit.org
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>selunit-root</artifactId>
+		<groupId>org.selunit</groupId>
+		<version>0.7.12</version>
+		<relativePath>../selunit-root</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>selunit-selenium-dependencies</artifactId>
+	<name>selenium-dependencies</name>
+	<packaging>jar</packaging>
+	<developers>
+		<developer>
+			<id>MBook</id>
+			<name>Michael</name>
+			<email>selunit@mbok.de</email>
+			<organization />
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>Oliver</id>
+			<name>Oliver</name>
+			<email>selunit@mbok.de</email>
+			<organization />
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<url>http://www.selunit.org</url>
+	<description>Selunit is an open-source project to simply combine
+		comprehensively Selenium tests with Continuous Integration</description>
+
+	<scm>
+		<connection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.12/selunit-selenium-dependencies</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.12/selunit-selenium-dependencies</developerConnection>
+		<url>https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.12/selunit-selenium-dependencies</url>
+	</scm>
+
+	<properties>
+		<selenium.version>2.22.0</selenium.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>get-service-server-configuration</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.seleniumhq.selenium</groupId>
+									<artifactId>selenium-server</artifactId>
+									<version>${selenium.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/core-resources</outputDirectory>
+									<includes>core/**</includes>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>process-configuration-filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<pathconvert pathsep=";" property="core.files" dirsep="/">
+									<path>
+										<fileset dir="${project.build.directory}/core-resources">
+											<include name="**" />
+										</fileset>
+									</path>
+									<mapper>
+										<regexpmapper from="[\\/]core[\\/](.*)" to="\1" />
+									</mapper>
+								</pathconvert>
+								<mkdir dir="${project.build.directory}/classes/core" />
+								<echoproperties destfile="${project.build.directory}/classes/core/index.properties" prefix="core" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-antrun-plugin
+										</artifactId>
+										<versionRange>
+											[1.6,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.2,)
+										</versionRange>
+										<goals>
+											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-server</artifactId>
+			<version>${selenium.version}</version>
+			<!-- <scope>runtime</scope> -->
+		</dependency>
+	</dependencies>
+</project>
