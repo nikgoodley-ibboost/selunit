@@ -68,6 +68,49 @@ public class SequentialExecutorTest {
 	}
 
 	@Test
+	public void testSpaces() throws Exception {
+		final ArrayList<TestSuiteReport> reports = new ArrayList<TestSuiteReport>();
+		SequentialExecutor<DefaultTestJob> exec = new SequentialExecutor<DefaultTestJob>();
+		exec.setTestResourceAccess(resourceAccess);
+		exec.setReportOutputProcessor(new OutputProcessor<TestSuiteReport>() {
+
+			@Override
+			public void processOutput(final TestSuiteReport suite)
+					throws OutputProcessException {
+				reports.add(suite);
+				Assert.assertNotNull(suite);
+			}
+		});
+		// Before start
+		Assert.assertEquals(0, reports.size());
+		exec.init(job);
+		Assert.assertEquals(StatusType.INITIALIZED, exec.getStatus().getType());
+		exec.start(suites);
+		Assert.assertEquals(StatusType.EXECUTING_SUITES, exec.getStatus()
+				.getType());
+		while (exec.getStatus().getType() != StatusType.FINISHED_SUITES) {
+			Thread.sleep(1000);
+		}
+		// After first execution
+		Assert.assertNull(exec.getStatus().getExecutionError());
+		Assert.assertEquals(2, reports.size());
+
+		// Continue same execution with only the first suite
+		exec.start(Collections.singletonList("Copy of SuiteSimple.html"));
+		Assert.assertEquals(StatusType.EXECUTING_SUITES, exec.getStatus()
+				.getType());
+		while (exec.getStatus().getType() != StatusType.FINISHED_SUITES) {
+			Thread.sleep(1000);
+		}
+		// After execution
+		Assert.assertNull(exec.getStatus().getExecutionError());
+		Assert.assertEquals(3, reports.size());
+
+		exec.stop(false);
+		Assert.assertEquals(StatusType.STOPPED, exec.getStatus().getType());
+	}
+
+	@Test
 	public void testSequentialExecutor() throws Exception {
 		final ArrayList<TestSuiteReport> reports = new ArrayList<TestSuiteReport>();
 		SequentialExecutor<DefaultTestJob> exec = new SequentialExecutor<DefaultTestJob>();
@@ -75,7 +118,7 @@ public class SequentialExecutorTest {
 		exec.setReportOutputProcessor(new OutputProcessor<TestSuiteReport>() {
 
 			@Override
-			public void processOutput(TestSuiteReport suite)
+			public void processOutput(final TestSuiteReport suite)
 					throws OutputProcessException {
 				reports.add(suite);
 				Assert.assertNotNull(suite);
@@ -117,7 +160,7 @@ public class SequentialExecutorTest {
 		exec.setTestResourceAccess(resourceAccess);
 		exec.setReportOutputProcessor(new OutputProcessor<TestSuiteReport>() {
 			@Override
-			public void processOutput(TestSuiteReport suite)
+			public void processOutput(final TestSuiteReport suite)
 					throws OutputProcessException {
 				reports.add(suite);
 				Assert.assertNotNull(suite);
@@ -159,24 +202,27 @@ public class SequentialExecutorTest {
 		handlers.add(new JobHandlerAdapter<DefaultTestJob>() {
 
 			@Override
-			public void startTestSuite(DefaultTestJob job, String suite)
-					throws TestJobException {
+			public void startTestSuite(final DefaultTestJob job,
+					final String suite) throws TestJobException {
 				startedSuite.add(true);
 			}
 
 			@Override
-			public void initJob(DefaultTestJob job) throws TestJobException {
+			public void initJob(final DefaultTestJob job)
+					throws TestJobException {
 				initedJob.add(job);
 			}
 
 			@Override
-			public void stopJob(DefaultTestJob job) throws TestJobException {
+			public void stopJob(final DefaultTestJob job)
+					throws TestJobException {
 				initedJob.remove(job);
 			}
 
 			@Override
-			public void finishTestSuite(DefaultTestJob job, String suitePath,
-					TestSuiteReport report) throws TestJobException {
+			public void finishTestSuite(final DefaultTestJob job,
+					final String suitePath, final TestSuiteReport report)
+					throws TestJobException {
 				reports.add(report);
 			}
 
@@ -221,7 +267,7 @@ public class SequentialExecutorTest {
 		final ArrayList<TestSuiteReport> reports = new ArrayList<TestSuiteReport>();
 		exec.setReportOutputProcessor(new OutputProcessor<TestSuiteReport>() {
 			@Override
-			public void processOutput(TestSuiteReport suite)
+			public void processOutput(final TestSuiteReport suite)
 					throws OutputProcessException {
 				reports.add(suite);
 				Assert.assertNotNull(suite);

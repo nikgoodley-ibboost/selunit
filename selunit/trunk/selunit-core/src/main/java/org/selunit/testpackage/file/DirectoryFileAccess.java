@@ -22,7 +22,6 @@ import org.selunit.job.TestJob;
 import org.selunit.testpackage.TestResource;
 import org.selunit.testpackage.TestResourceAccess;
 
-
 /**
  * Represents a package view to a directory without considering the project
  * information.
@@ -39,19 +38,23 @@ public class DirectoryFileAccess implements TestResourceAccess {
 	 * @param directory
 	 *            the root for current package and all contained resources.
 	 */
-	public DirectoryFileAccess(File directory) {
+	public DirectoryFileAccess(final File directory) {
 		this.directory = directory;
 	}
 
 	@Override
-	public TestResource getResource(TestJob job, String name)
+	public TestResource getResource(final TestJob job, final String name)
 			throws IOException {
 		File f = new File(getDirectory(), name);
 		if (f.exists()) {
 			return new FileResource(f, name);
-		} else {
-			return null;
+		} else if (name.contains("+")) {
+			f = new File(getDirectory(), name.replace("+", " "));
+			if (f.exists()) {
+				return new FileResource(f, name);
+			}
 		}
+		return null;
 	}
 
 	/**
@@ -65,7 +68,7 @@ public class DirectoryFileAccess implements TestResourceAccess {
 	 * @param directory
 	 *            the directory to set
 	 */
-	public void setDirectory(File directory) {
+	public void setDirectory(final File directory) {
 		this.directory = directory;
 	}
 
