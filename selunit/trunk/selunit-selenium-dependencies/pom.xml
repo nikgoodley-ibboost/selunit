@@ -62,7 +62,7 @@
 	</scm>
 
 	<properties>
-		<selenium.version>2.22.0</selenium.version>
+		<selenium.version>2.35.0</selenium.version>
 	</properties>
 
 	<build>
