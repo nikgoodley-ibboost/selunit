@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <!--
 Copyright 2011 selunit.org
 
@@ -17,15 +17,37 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-  <title>Test Suite</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://www.google.de/" />
+<title>Copy of GoogleSearch1.html</title>
 </head>
 <body>
-<table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
-<tr><td><b>Test Suite</b></td></tr>
-<tr><td><a href="testcases/Copy of GoogleSearch1.html">Copy of GoogleSearch1.html</a></td></tr>
-<tr><td><a href="testcases/GoogleSearch2.html">GoogleSearch2</a></td></tr>
-<tr><td><a href="testcases/GoogleSearch3.html">GoogleSearch3</a></td></tr>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Copy of GoogleSearch1.html</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>selenium</td>
+</tr>
+<!--Cause an error accessing not available element-->
+<tr>
+	<td>type</td>
+	<td>qnull</td>
+	<td>selenium</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>continue case...</td>
+</tr>
+
 </tbody></table>
 </body>
 </html>
