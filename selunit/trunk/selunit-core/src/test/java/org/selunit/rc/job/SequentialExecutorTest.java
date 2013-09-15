@@ -85,28 +85,26 @@ public class SequentialExecutorTest {
 		Assert.assertEquals(0, reports.size());
 		exec.init(job);
 		Assert.assertEquals(StatusType.INITIALIZED, exec.getStatus().getType());
-		exec.start(suites);
-		Assert.assertEquals(StatusType.EXECUTING_SUITES, exec.getStatus()
-				.getType());
-		while (exec.getStatus().getType() != StatusType.FINISHED_SUITES) {
-			Thread.sleep(1000);
-		}
-		// After first execution
-		Assert.assertNull(exec.getStatus().getExecutionError());
-		Assert.assertEquals(2, reports.size());
-
-		// Continue same execution with only the first suite
 		exec.start(Collections.singletonList("Copy of SuiteSimple.html"));
 		Assert.assertEquals(StatusType.EXECUTING_SUITES, exec.getStatus()
 				.getType());
 		while (exec.getStatus().getType() != StatusType.FINISHED_SUITES) {
 			Thread.sleep(1000);
 		}
+		exec.stop(false);
+
 		// After execution
 		Assert.assertNull(exec.getStatus().getExecutionError());
-		Assert.assertEquals(3, reports.size());
+		Assert.assertEquals("Copy of SuiteSimple.html", reports.get(0)
+				.getFileName());
+		Assert.assertEquals("testcases/Copy of GoogleSearch1.html", reports
+				.get(0).getTestCases().get(0).getFileName());
+		Assert.assertTrue(reports.get(0).getTestCases().get(0).getResultLog()
+				.getSystemLog().length() > 10);
+		Assert.assertTrue(reports.get(0).getTestCases().get(0).getStartTime() > 0);
+		Assert.assertTrue(reports.get(0).getTestCases().get(0).getEndTime() > 0);
 
-		exec.stop(false);
+		Assert.assertEquals(1, reports.size());
 		Assert.assertEquals(StatusType.STOPPED, exec.getStatus().getType());
 	}
 

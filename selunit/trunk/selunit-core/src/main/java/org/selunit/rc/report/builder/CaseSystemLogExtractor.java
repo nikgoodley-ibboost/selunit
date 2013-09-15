@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.selunit.rc.report.builder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,8 +32,8 @@ public class CaseSystemLogExtractor {
 		private long startTime;
 		private long endTime;
 
-		private CaseLogPair(String caseFileName, String log, long startTime,
-				long endTime) {
+		private CaseLogPair(final String caseFileName, final String log,
+				final long startTime, final long endTime) {
 			this.caseFileName = caseFileName;
 			this.log = log;
 			this.startTime = startTime;
@@ -62,19 +64,25 @@ public class CaseSystemLogExtractor {
 					+ "info: Finished test case \"\\1\" at: (\\d+)\\s*",
 			Pattern.MULTILINE | Pattern.DOTALL);
 
-	public List<CaseLogPair> extractCaseLogs(String systemLog) {
+	public List<CaseLogPair> extractCaseLogs(final String systemLog) {
 		ArrayList<CaseLogPair> caseLogs = new ArrayList<CaseLogPair>();
 		Matcher m = CASE_LOG_PATTERN.matcher(systemLog);
 
 		while (m.find()) {
-			CaseLogPair caseLog = new CaseLogPair(m.group(1), m.group(), Long
-					.parseLong(m.group(2)), Long.parseLong(m.group(3)));
+			String fileName = null;
+			try {
+				fileName = URLDecoder.decode(m.group(1), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				fileName = m.group(1);
+				log.error("Failed to decode file name: " + fileName);
+			}
+			CaseLogPair caseLog = new CaseLogPair(fileName, m.group(),
+					Long.parseLong(m.group(2)), Long.parseLong(m.group(3)));
 			caseLogs.add(caseLog);
 			log.debug("Extracted case log: " + caseLog);
 		}
 		if (caseLogs.size() == 0) {
-			log
-					.warn("System logs don't match case pattern. Are the extended reporting components active?");
+			log.warn("System logs don't match case pattern. Are the extended reporting components active?");
 		}
 		return caseLogs;
 	}
