@@ -170,4 +170,8 @@ SeleniumTestResult.prototype.post=function () {
         window.top.close();
     }
 }
+
+Selenium.prototype.doSendKeys = function(locator, text) {
+	this.doType(locator, text);
+}
 /** END REPORTING EXTENSIONS **/
