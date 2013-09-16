@@ -103,6 +103,8 @@ public class SequentialExecutorTest {
 				.getSystemLog().length() > 10);
 		Assert.assertTrue(reports.get(0).getTestCases().get(0).getStartTime() > 0);
 		Assert.assertTrue(reports.get(0).getTestCases().get(0).getEndTime() > 0);
+		Assert.assertEquals(ResultType.PASSED, reports.get(0).getTestCases()
+				.get(0).getResultType());
 
 		Assert.assertEquals(1, reports.size());
 		Assert.assertEquals(StatusType.STOPPED, exec.getStatus().getType());
