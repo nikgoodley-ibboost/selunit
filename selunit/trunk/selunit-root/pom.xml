@@ -11,7 +11,7 @@
 	<artifactId>selunit-root</artifactId>
 	<packaging>pom</packaging>
 	<name>selunit-root</name>
-	<version>0.7.18</version>
+	<version>0.7.19-SNAPSHOT</version>
 	<developers>
 		<developer>
 			<id>MBook</id>
@@ -52,9 +52,9 @@
 	</parent>
 
 	<scm>
-		<connection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.18/selunit-root</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.18/selunit-root</developerConnection>
-		<url>https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.18/selunit-root</url>
+		<connection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-root/</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-root/</developerConnection>
+		<url>https://selunit.googlecode.com/svn/selunit/trunk/selunit-root/</url>
 	</scm>
 
 	<properties>
