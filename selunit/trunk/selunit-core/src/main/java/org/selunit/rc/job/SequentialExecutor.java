@@ -17,6 +17,7 @@ package org.selunit.rc.job;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -49,6 +50,7 @@ public class SequentialExecutor<J extends TestJob> extends
 
 	private class SequentialExecutorThread extends Thread {
 		private boolean finsihed = true;
+		private boolean killSignal = false;
 
 		@Override
 		public void run() {
@@ -137,7 +139,8 @@ public class SequentialExecutor<J extends TestJob> extends
 											.getStartTime()) / 1000);
 								}
 								if (report.getResultType() == ResultType.EXECUTING) {
-									if (getStatus().getType() == StatusType.STOPPED) {
+									if (getStatus().getType() == StatusType.STOPPING
+											&& this.killSignal) {
 										report.setResultType(ResultType.CANCELED);
 										report.setResultMessage("Canceled by user");
 									} else {
@@ -167,20 +170,11 @@ public class SequentialExecutor<J extends TestJob> extends
 					}
 					throw e;
 				} finally {
-					synchronized (SequentialExecutor.class) {
-						if (getStatus().getType() == StatusType.EXECUTING_SUITES) {
-							getStatus().setType(StatusType.FINISHED_SUITES);
-						}
-						try {
-							log.info("Finished job execution: " + job);
-							for (JobExecutorHandler<J> h : getHandlers()) {
-								h.finishExecution(job, getStatus());
-							}
-						} finally {
-							if (getStatus().getType() == StatusType.STOPPING) {
-								SequentialExecutor.this.stop(true, false);
-							}
-						}
+					setConditionalState(StatusType.FINISHED_SUITES,
+							StatusType.EXECUTING_SUITES);
+					log.info("Finished job execution: " + job);
+					for (JobExecutorHandler<J> h : getHandlers()) {
+						h.finishExecution(job, getStatus());
 					}
 				}
 			} catch (Throwable e) {
@@ -189,30 +183,74 @@ public class SequentialExecutor<J extends TestJob> extends
 						new TestJobException(job, e.getMessage()));
 			} finally {
 				finsihed = true;
+				if (!killSignal) {
+					try {
+						executeSynchronized(new Execution() {
+							@Override
+							public void execute() throws TestJobException {
+								if (getStatus().getType() == StatusType.STOPPING) {
+									SequentialExecutor.this.shutdown();
+								}
+							}
+						});
+					} catch (TestJobException e) {
+						log.error("Failed to shutdown execution for job: "
+								+ job, e);
+					}
+				}
 			}
 		}
 	}
 
-	@Override
-	synchronized public void init(J job) throws TestJobException {
-		if (getStatus().getType() == StatusType.STOPPED) {
-			this.job = job;
-			init();
-		} else {
-			throw new TestJobException(
-					"Executor has unfinished job, stop current execution before starting a new one!");
+	protected static interface Execution {
+		public void execute() throws TestJobException;
+	}
+
+	synchronized protected void executeSynchronized(final Execution exec)
+			throws TestJobException {
+		exec.execute();
+	}
+
+	protected void setConditionalState(final StatusType toSet,
+			final StatusType... shouldHave) throws TestJobException {
+		synchronized (getStatus()) {
+			OUT: if (shouldHave != null && shouldHave.length > 0) {
+				for (StatusType h : shouldHave) {
+					if (h == getStatus().getType()) {
+						break OUT;
+					}
+				}
+				return;
+			}
+			getStatus().setType(toSet);
 		}
 	}
 
-	synchronized private void init() throws TestJobException {
-		getStatus().setType(StatusType.INITIALIZING);
+	@Override
+	public void init(final J job) throws TestJobException {
+		executeSynchronized(new Execution() {
+			@Override
+			public void execute() throws TestJobException {
+				if (getStatus().getType() == StatusType.STOPPED) {
+					SequentialExecutor.this.job = job;
+					init();
+				} else {
+					throw new TestJobException(
+							"Executor has unfinished job, stop current execution before starting a new one!");
+				}
+			}
+		});
+	}
+
+	private void init() throws TestJobException {
+		setConditionalState(StatusType.INITIALIZING);
 		log.info("Initializing executor for job: " + job);
 		if (server == null) {
 			server = SequentialExecutor.this.createServerInstance(job);
 			try {
 				server.start();
 			} catch (Exception e) {
-				getStatus().setType(StatusType.STOPPED);
+				setConditionalState(StatusType.STOPPED);
 				throw new TestJobException(job,
 						"Failed to start selenium server", e);
 			}
@@ -222,81 +260,103 @@ public class SequentialExecutor<J extends TestJob> extends
 				h.initJob(job);
 			}
 		} catch (TestJobException e) {
-			getStatus().setType(StatusType.STOPPED);
+			setConditionalState(StatusType.STOPPED);
 			throw e;
 		}
 
-		getStatus().setType(StatusType.INITIALIZED);
+		setConditionalState(StatusType.INITIALIZED);
 	}
 
 	@Override
-	synchronized public void start(List<String> suites) throws TestJobException {
-		switch (getStatus().getType()) {
-		case FINISHED_SUITES:
-		case INITIALIZED:
-			log.info("Starting execution instance for job: " + job);
-			this.suites = suites;
-			thread = new SequentialExecutorThread();
-			setStatus(new DefaultExecutionStatus());
-			getStatus().setType(StatusType.EXECUTING_SUITES);
-			thread.start();
-			break;
-		default:
-			throw new TestJobException(job,
-					"Executor isn't initialized properly, has state: "
-							+ getStatus().getType());
-		}
+	public void start(final List<String> suites) throws TestJobException {
+		executeSynchronized(new Execution() {
+			@Override
+			public void execute() throws TestJobException {
+				switch (getStatus().getType()) {
+				case FINISHED_SUITES:
+				case INITIALIZED:
+					log.info("Starting execution instance for job: " + job);
+					SequentialExecutor.this.suites = suites;
+					thread = new SequentialExecutorThread();
+					setStatus(new DefaultExecutionStatus());
+					setConditionalState(StatusType.EXECUTING_SUITES);
+					thread.start();
+					break;
+				default:
+					throw new TestJobException(job,
+							"Executor isn't initialized properly, has state: "
+									+ getStatus().getType());
+				}
+			}
+		});
 	}
 
 	@SuppressWarnings("deprecation")
-	private void stop(boolean shutdown, boolean stopThread)
-			throws TestJobException {
+	private void shutdown() throws TestJobException {
 		if (getStatus().getType() == StatusType.STOPPED) {
+			log.info("Execution already stopped for job: " + job);
 			return;
 		}
-		if (shutdown || getStatus().getType() == StatusType.FINISHED_SUITES) {
-			getStatus().setStoppedByUser(true);
-			log.info("Shutdowning selenium server by user for job: " + job);
-			getStatus().setType(StatusType.STOPPED);
-			try {
-				if (server != null) {
+		log.info("Shutdowning execution for job: " + job);
+		setConditionalState(StatusType.STOPPING);
+		try {
+			if (server != null) {
+				try {
 					server.stop();
-					if (thread != null && stopThread) {
-						thread.stop();
-						while (!thread.finsihed) {
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								log.warn("Unexpected interrupted exception", e);
-							}
-						}
+				} catch (Throwable e) {
+					log.error("Failed to stop server for job: " + job, e);
+				}
+			}
+			if (thread != null) {
+				log.info("Killing thread for job: " + job);
+				thread.killSignal = true;
+				thread.stop();
+				while (!thread.finsihed) {
+					try {
+						log.info("Waiting for thread in: "
+								+ Arrays.toString(thread.getStackTrace()));
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						log.warn("Unexpected interrupted exception", e);
 					}
 				}
-			} finally {
-				server = null;
-				thread = null;
+			}
+		} finally {
+			server = null;
+			thread = null;
+			try {
 				for (JobExecutorHandler<J> h : getHandlers()) {
 					try {
 						h.stopJob(job);
-					} catch (TestJobException e) {
+					} catch (Throwable e) {
 						log.error("Error on " + h.getClass()
 								+ "#stopJob for job: " + job, e);
 					}
 				}
-				// job = null;
+			} finally {
+				setConditionalState(StatusType.STOPPED);
 			}
-		} else if (getStatus().getType() == StatusType.EXECUTING_SUITES) {
-			getStatus().setType(StatusType.STOPPING);
-			getStatus().setStoppedByUser(true);
-			log.info("Going to stop job execution by user: " + job);
-		} else {
-			stop(true, stopThread);
 		}
 	}
 
 	@Override
-	public void stop(boolean shutdown) throws TestJobException {
-		stop(shutdown, true);
+	public void stop(final boolean shutdown) throws TestJobException {
+		executeSynchronized(new Execution() {
+			@Override
+			public void execute() throws TestJobException {
+				if (!shutdown
+						&& getStatus().getType() == StatusType.EXECUTING_SUITES) {
+					setConditionalState(StatusType.STOPPING);
+					getStatus().setStoppedByUser(true);
+					log.info("Going to stop job execution by user nicely: "
+							+ job);
+				} else {
+					log.info("Going to shutdown job execution by user: " + job);
+					getStatus().setStoppedByUser(true);
+					shutdown();
+				}
+			}
+		});
 	}
 
 	/**
@@ -306,7 +366,7 @@ public class SequentialExecutor<J extends TestJob> extends
 	 *            Job to repeat suites
 	 * @return True if suites should be repeated again
 	 */
-	protected boolean shouldRepeatSuites(J job) {
+	protected boolean shouldRepeatSuites(final J job) {
 		return false;
 	}
 }

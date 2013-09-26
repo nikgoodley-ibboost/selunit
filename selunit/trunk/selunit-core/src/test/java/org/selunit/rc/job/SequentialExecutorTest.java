@@ -239,6 +239,7 @@ public class SequentialExecutorTest {
 			if (startShutdown) {
 				startedSuite.clear();
 				System.out.println("Terminating executor...");
+				exec.stop(false);
 				exec.stop(true);
 			}
 			if (System.currentTimeMillis() - startWhile > 1000 * 60) {
