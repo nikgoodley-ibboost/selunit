@@ -17,7 +17,7 @@
 	<parent>
 		<artifactId>selunit-root</artifactId>
 		<groupId>org.selunit</groupId>
-		<version>0.7.20</version>
+		<version>0.7.21-SNAPSHOT</version>
 		<relativePath>../selunit-root</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -56,9 +56,9 @@
 		comprehensively Selenium tests with Continuous Integration</description>
 
 	<scm>
-		<connection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.20/selunit-selenium-dependencies</connection>
-		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.20/selunit-selenium-dependencies</developerConnection>
-		<url>https://selunit.googlecode.com/svn/selunit/tags/releases/0.7.20/selunit-selenium-dependencies</url>
+		<connection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-selenium-dependencies</connection>
+		<developerConnection>scm:svn:https://selunit.googlecode.com/svn/selunit/trunk/selunit-selenium-dependencies</developerConnection>
+		<url>https://selunit.googlecode.com/svn/selunit/trunk/selunit-selenium-dependencies</url>
 	</scm>
 
 	<properties>
