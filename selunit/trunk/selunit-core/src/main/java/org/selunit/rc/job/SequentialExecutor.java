@@ -96,8 +96,73 @@ public class SequentialExecutor<J extends TestJob> extends
 								try {
 									log.info("Launching suite: "
 											+ suite.getName());
-									report = SequentialExecutor.this
-											.launchSuite(server, job, suite);
+									final TestResource suiteToLaunch = suite;
+									class SuiteLauncherThread extends Thread {
+										private Throwable exception;
+										private DefaultTestSuite result;
+										private boolean done = false;
+
+										@Override
+										public void run() {
+											try {
+												log.info("Launching suite asynchronous: "
+														+ suiteToLaunch
+																.getName());
+												result = SequentialExecutor.this
+														.launchSuite(server,
+																job,
+																suiteToLaunch);
+											} catch (Throwable e) {
+												log.error(
+														"Error during launching suite: "
+																+ suiteToLaunch
+																		.getName(),
+														e);
+												exception = e;
+											} finally {
+												log.info("Finished suite asynchronous: "
+														+ suiteToLaunch
+																.getName());
+												done = true;
+											}
+										}
+									}
+									SuiteLauncherThread launchThread = new SuiteLauncherThread();
+									launchThread.start();
+									while (!this.killSignal) {
+										if (launchThread.done) {
+											break;
+										}
+										Thread.sleep(100);
+									}
+									if (this.killSignal) {
+										log.info("Killing suite launching thread");
+										launchThread.stop();
+										while (!launchThread.done) {
+											log.info("Waiting for thread in: "
+													+ Arrays.toString(thread
+															.getStackTrace()));
+											Thread.sleep(100);
+										}
+									}
+									if (launchThread.result != null) {
+										log.info("Finished suite launching with a report");
+										report = launchThread.result;
+									}
+									if (launchThread.exception != null) {
+										log.info(
+												"Finished suite launching thread with an exception: ",
+												launchThread.exception);
+										if (launchThread.exception instanceof SeleniumCommandTimedOutException
+												|| launchThread.exception
+														.getCause() instanceof SeleniumCommandTimedOutException) {
+											report.setResultMessage("Timeout exception for suite: "
+													+ suite.getName());
+											log.info(report.getResultMessage()
+													+ " - job: " + job);
+										}
+									}
+									// report =
 								} finally {
 									report.setIterationCount(cycle);
 								}
@@ -113,18 +178,10 @@ public class SequentialExecutor<J extends TestJob> extends
 								throw new TestJobException(job,
 										report.getResultMessage(), e);
 							} catch (Throwable e) {
-								if (e instanceof SeleniumCommandTimedOutException
-										|| e.getCause() instanceof SeleniumCommandTimedOutException) {
-									report.setResultMessage("Timeout exception for suite: "
-											+ suite.getName());
-									log.info(report.getResultMessage()
-											+ " - job: " + job);
-								} else {
-									report.setResultMessage("Failed to execute suite: "
-											+ suite.getName());
-									throw new TestJobException(job,
-											report.getResultMessage(), e);
-								}
+								report.setResultMessage("Failed to execute suite: "
+										+ suite.getName());
+								throw new TestJobException(job,
+										report.getResultMessage(), e);
 							} finally {
 								// Finalize report if not filled properly
 								if (report.getStartTime() <= 0) {
@@ -291,7 +348,6 @@ public class SequentialExecutor<J extends TestJob> extends
 		});
 	}
 
-	@SuppressWarnings("deprecation")
 	private void shutdown() throws TestJobException {
 		if (getStatus().getType() == StatusType.STOPPED) {
 			log.info("Execution already stopped for job: " + job);
@@ -310,7 +366,7 @@ public class SequentialExecutor<J extends TestJob> extends
 			if (thread != null) {
 				log.info("Killing thread for job: " + job);
 				thread.killSignal = true;
-				thread.stop();
+				// thread.stop();
 				while (!thread.finsihed) {
 					try {
 						log.info("Waiting for thread in: "
@@ -322,6 +378,7 @@ public class SequentialExecutor<J extends TestJob> extends
 				}
 			}
 		} finally {
+			log.info("Killed thread for job: " + job);
 			server = null;
 			thread = null;
 			try {
@@ -335,6 +392,7 @@ public class SequentialExecutor<J extends TestJob> extends
 				}
 			} finally {
 				setConditionalState(StatusType.STOPPED);
+				log.info("Stopped job execution: " + job);
 			}
 		}
 	}
