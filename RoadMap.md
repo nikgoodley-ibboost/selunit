@@ -1,0 +1,4 @@
+# Features #
+  * Parallel execution
+  * Fast fail to interrupt test execution after the first error
+  * Generate reports in case of SeleniumTimeoutException too
